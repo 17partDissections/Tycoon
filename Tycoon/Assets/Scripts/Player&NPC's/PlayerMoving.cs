@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class PlayerMoving : MonoBehaviour
@@ -29,9 +30,9 @@ public class PlayerMoving : MonoBehaviour
         {
             //Debug.Log(_standardMap.GroundMap.Moving.ReadValueAsObject());
             Vector2 movingDirection = _standardMap.GroundMap.Moving.ReadValue<Vector2>();
+
             _rigidbody.velocity = new Vector3(movingDirection.x * 10, _rigidbody.velocity.y, movingDirection.y * 10);
             transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
-            //transform.rotation = Quaternion.Slerp(transform.rotation, , Time.deltaTime);
         }
     }
 }
