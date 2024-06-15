@@ -7,15 +7,14 @@ public class PlayerMoving : MonoBehaviour
 {
     private StandardMap _standardMap;
     private Rigidbody _rigidbody;
-
+    [SerializeField] private Transform _rotation;
     void Start()
     {
-
         _standardMap = new StandardMap();
         _standardMap.GroundMap.Enable();
         _standardMap.GroundMap.Jump.performed += Jump;
 
-        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent/*InChildren*/<Rigidbody>();
 
     }
 
@@ -32,7 +31,8 @@ public class PlayerMoving : MonoBehaviour
             Vector2 movingDirection = _standardMap.GroundMap.Moving.ReadValue<Vector2>();
 
             _rigidbody.velocity = new Vector3(movingDirection.x * 10, _rigidbody.velocity.y, movingDirection.y * 10);
-            transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
+            _rotation.rotation = Quaternion.LookRotation(_rigidbody.velocity);
+            
         }
     }
 }
