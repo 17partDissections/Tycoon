@@ -1,14 +1,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditorInternal;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 public abstract class ShowcaseAbstraction<T> : MonoBehaviour where T : Item
 {
-    public int ShowcacePrice;
+    public int ShowcasePrice;
 
     [SerializeField] private List<T> _showcaseInventory;
     [SerializeField] private List<BackpackBuyer> BuyerEnteredTrigger = new List<BackpackBuyer>();
@@ -16,9 +16,12 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour where T : Item
     private int _enabledItems4Buyers;
     private EventBus _eventbus;
     private Storage _storage;
+    private Wallet _playerWallet;
     private Backpack _backpackAbstraction;
-    private bool _buyed;
+    private bool _buyed = false;
     private FabricsNShowcasesCanvas _canvas;
+    [SerializeField] private Image _itemIcon;
+    [SerializeField] private TextMeshProUGUI _text;
 
     private void AddItem()
     {
@@ -31,57 +34,73 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour where T : Item
 
     private void Awake()
     {
+
         _item = _showcaseInventory[0];
         _storage.AddItem2Aviable(_item.ItemName, transform);
+        _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, ShowcasePrice);
+
         //_storage.AddItem2Aviable(ItemName.Watermelon, transform);
         //_storage.AddItem2Aviable(ItemName.Banana, transform);
 
     }
     [Inject]
-    private void Construct(EventBus bus, Storage storage)
+    private void Construct(EventBus bus, Storage storage, Wallet wallet)
     {
         _eventbus = bus;
         _storage = storage;
+        _playerWallet = wallet;
     }
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction))
+        if (_buyed)
         {
-            _backpackAbstraction = backpackAbstraction;
-            switch (backpackAbstraction.GetType().Name)
+            if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction))
             {
-                case nameof(BackpackWorker):
-                    BackpackWasWorker();
-                    break;
-                case nameof(BackpackBuyer):
-                    if (backpackAbstraction.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine stateMachine))
-                    {
-                        var sameObjects = stateMachine.WannaBuy.Where(x => x == _item.ItemName);
-                        List<ItemName> RepeatingItemsList = new List<ItemName>(sameObjects);
-
-                        var backpackBuyer = backpackAbstraction as BackpackBuyer;
-                        backpackBuyer.RepeatingItems.Clear();
-                        backpackBuyer.RepeatingItems.AddRange(RepeatingItemsList);
-                        Debug.Log(backpackBuyer.RepeatingItems.Count);
-                        if (RepeatingItemsList.Count() > 0)
+                _backpackAbstraction = backpackAbstraction;
+                switch (backpackAbstraction.GetType().Name)
+                {
+                    case nameof(BackpackWorker):
+                        BackpackWasWorker();
+                        break;
+                    case nameof(BackpackBuyer):
+                        if (backpackAbstraction.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine stateMachine))
                         {
-                            BuyerEnteredTrigger.Add(backpackAbstraction as BackpackBuyer);
+                            var sameObjects = stateMachine.WannaBuy.Where(x => x == _item.ItemName);
+                            List<ItemName> RepeatingItemsList = new List<ItemName>(sameObjects);
 
-                            GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
+                            var backpackBuyer = backpackAbstraction as BackpackBuyer;
+                            backpackBuyer.RepeatingItems.Clear();
+                            backpackBuyer.RepeatingItems.AddRange(RepeatingItemsList);
+                            Debug.Log(backpackBuyer.RepeatingItems.Count);
+                            if (RepeatingItemsList.Count() > 0)
+                            {
+                                BuyerEnteredTrigger.Add(backpackAbstraction as BackpackBuyer);
+
+                                GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
+
+                            }
+
 
                         }
-
-
-                    }
-                    break;
+                        break;
+                }
             }
+
+        }
+        else
+        {
+            BuyShowcase();
         }
     }
     public void BuyShowcase()
     {
-        _buyed = true;
-        _canvas.OnlyIcon();
+        if (_playerWallet.Trying2BuySmthng(ShowcasePrice) == true)
+        {
+            _buyed = true;
+            _canvas.OnlyIcon();
+            _eventbus.StageSignal.Invoke(2);
+        }
+
     }
 
     private void GiveItems2Buyer(Backpack backpackAbstraction, List<ItemName> RepeatingItemsList)
@@ -132,7 +151,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour where T : Item
         BuyerEnteredTrigger.Remove(backpackBuyer);
         if (backpackBuyer.WannaBuy.Count == 0)
         {
-           buyerStateMachine.ChangeState(BuyerStateMachine.BuyerStates.Going2CashierState);
+           buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
         }
         else
         {

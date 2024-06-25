@@ -4,7 +4,6 @@ using TMPro;
 
 public class FabricsNShowcasesCanvas
 {
-    private FabricAbstraction _fabricAbstraction;
     private Image _itemIcon;
     public TextMeshProUGUI Text;
     private int _price;
@@ -14,6 +13,8 @@ public class FabricsNShowcasesCanvas
          _itemIcon = itemIcon;
          Text = text;
         _price = price;
+        SetPrice();
+
     }
 
     public void SetPrice()
@@ -21,6 +22,7 @@ public class FabricsNShowcasesCanvas
         _itemIcon.enabled = false;
         Text.text = (_price + "$").ToString();
     }
+
     public void OnlyIcon()
     {
         _itemIcon.enabled = true;

@@ -1,5 +1,7 @@
 
 
+using System.Diagnostics;
+
 public class Going2ItemState : BaseState<BuyerStateMachine.BuyerStates>
 {
     private BuyerStateMachine _stateMachine;
@@ -16,7 +18,7 @@ public class Going2ItemState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Exit2State()
     {
-
+        UnityEngine.Debug.Log("exitFromItemState");
     }
 
     public override void UpdateState()

@@ -25,6 +25,7 @@ public abstract class FabricAbstraction : MonoBehaviour
     public Image _buyCircle;
     [SerializeField] private TextMeshProUGUI _text;
     private EventBus _eventbus;
+    [SerializeField] private int _stage;
     private Wallet _playerWallet;
 
     private void OnTriggerEnter(Collider other)
@@ -39,45 +40,41 @@ public abstract class FabricAbstraction : MonoBehaviour
                     backpack?.SaveItem(_itemCopy);
                     _canGrab = false;
                     _canvas.Text.text = "";
-                    GrowSignal.Invoke(_timer+=2); //disabling last phase visual object
+                    GrowSignal.Invoke(_timer += 2); //disabling last phase visual object
                     _timer = 0;
                     StartCoroutine(GrowCoroutine());
                 }
                 else
                 {
-                    Debug.Log("превышено максимальное количество объектов в рюкзаке");
+                    Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
                 }
             }
         }
         else
         {
-            _playerWallet.Trying2BuySmthng(FabricPrice);
-            if (_playerWallet.isOperationWasSuccessful == true)
-            {
             BuyFabric();
-            _eventbus.StageSignal.Invoke(1);
-            }
-
         }
 
     }
 
-    [Inject] private void Construct(EventBus bus, Wallet wallet)
+    [Inject]
+    private void Construct(EventBus bus, Wallet wallet)
     {
         _eventbus = bus;
         _playerWallet = wallet;
-    }
-    
 
-    private IEnumerator GrowCoroutine() 
+
+
+    }
+    private IEnumerator GrowCoroutine()
     {
         while (_timer < _growSpeed)
         {
             yield return new WaitForSeconds(1);
             _timer++;
             GrowSignal.Invoke(_timer);
-           _canvas.Text.text = (_timer + "/" + _growSpeed).ToString();
-            
+            _canvas.Text.text = (_timer + "/" + _growSpeed).ToString();
+
         }
         _canvas.Text.text = "done";
         var itemCopyOfGameObject = Instantiate(_visualTemplate, gameObject.transform);
@@ -93,7 +90,6 @@ public abstract class FabricAbstraction : MonoBehaviour
     private void Start()
     {
         _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, FabricPrice);
-            _canvas.SetPrice();
     }
     [ContextMenu("InitInspect")]
     public void InitInspector()
@@ -105,14 +101,20 @@ public abstract class FabricAbstraction : MonoBehaviour
     }
     public void BuyFabric()
     {
-        _buyed = true;
-        _canvas.OnlyIcon();
-        gameObject.SetActive(true);
-        _tilliage.SetActive(true);
-        if (_isCoroutineStarted == false)
+        if (_playerWallet.Trying2BuySmthng(FabricPrice) == true)
         {
-            StartCoroutine(GrowCoroutine());
-            _isCoroutineStarted = true;
+            _buyed = true;
+            _canvas.OnlyIcon();
+            gameObject.SetActive(true);
+            _tilliage.SetActive(true);
+            _eventbus.StageSignal.Invoke(_stage);
+            if (_isCoroutineStarted == false)
+            {
+                StartCoroutine(GrowCoroutine());
+                _isCoroutineStarted = true;
+            }
+
         }
+
     }
 }

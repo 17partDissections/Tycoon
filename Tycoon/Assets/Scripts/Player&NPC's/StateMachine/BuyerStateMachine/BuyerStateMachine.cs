@@ -46,18 +46,23 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         Going2ItemState Going2ItemState = new Going2ItemState(BuyerStates.Going2ItemState, this);
         States.Add(BuyerStates.Going2ItemState, Going2ItemState);
         Going2CashierState Going2CashierState = new Going2CashierState(BuyerStates.Going2CashierState, this);
-        States.Add(BuyerStates.Going2CashierState, Going2CashierState); Going2CashierState = new Going2CashierState(BuyerStates.Going2CashierState, this);
+        States.Add(BuyerStates.Going2CashierState, Going2CashierState);
         StartMachine(BuyerStates.StartState);
 
+        foreach (var item in States)
+        {
+            Debug.Log(item.Key.ToString());
+        }
     }
-    [Inject] private void construct(Storage storage)
+    public void Init(Storage storage)
     {
         Storage = storage;
+        Debug.Log(Storage);
 
     }
-    public void ChangeState(BuyerStates state)
+    public void ChangeStateFromMachine(BuyerStates state)
     {
-        ChangeState(state);
+        ChangeActionFromChildren(state);
     }
     public Transform GetWannaBuyObjPosition(ItemName item2find)
     {

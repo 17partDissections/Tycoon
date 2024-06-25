@@ -39,4 +39,9 @@ public abstract class StateMachineController<TState> : MonoBehaviour where TStat
         CurrentState.Enter2State();
         IsOnTransition = false;
     }
+
+    protected void ChangeActionFromChildren(TState tState)
+    {
+        CurrentState.ChangeStateAction.Invoke(tState);
+    }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.31400877, g: 0.3748084, b: 0.38769507, a: 1}
+  m_IndirectSpecularColor: {r: 0.31400955, g: 0.37480906, b: 0.38769543, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -420,7 +420,6 @@ GameObject:
   - component: {fileID: 18147505}
   - component: {fileID: 18147504}
   - component: {fileID: 18147503}
-  - component: {fileID: 18147506}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -512,19 +511,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &18147506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 18147501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3806effd623664140a670dc8ccd6f47d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cameraTransform: {fileID: 1269639047}
 --- !u!1 &20340921
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,7 +2371,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CoinsAmount: 0
   _startCoinsAmount: 60
-  isOperationWasSuccessful: 0
 --- !u!1 &160198808
 GameObject:
   m_ObjectHideFlags: 0
@@ -5958,7 +5943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b4f46ac58283242a1d88f2ebfe216e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fabricPrice: 35
+  FabricPrice: 35
   _item: {fileID: 1048600943}
   _tilliage: {fileID: 805909407}
   _visualTemplate: {fileID: 1048600941}
@@ -5966,6 +5951,7 @@ MonoBehaviour:
   _itemIcon: {fileID: 1328865020}
   _buyCircle: {fileID: 1515465634}
   _text: {fileID: 2131724447}
+  _stage: 1
 --- !u!65 &402486182
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6348,13 +6334,14 @@ GameObject:
   - component: {fileID: 449441339}
   - component: {fileID: 449441341}
   - component: {fileID: 449441338}
+  - component: {fileID: 449441342}
   m_Layer: 0
   m_Name: Showcase1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &449441338
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6388,6 +6375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d6c7470f1bfb4448913f9132c61788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowcasePrice: 20
   _showcaseInventory:
   - {fileID: 2066551019}
   - {fileID: 154179882}
@@ -6402,6 +6390,8 @@ MonoBehaviour:
   - {fileID: 595723568}
   - {fileID: 551635313}
   BuyerEnteredTrigger: []
+  _itemIcon: {fileID: 313358393}
+  _text: {fileID: 534336310}
 --- !u!4 &449441340
 Transform:
   m_ObjectHideFlags: 0
@@ -6446,6 +6436,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6, y: 2, z: 0.65}
   m_Center: {x: 0, y: 1, z: -0.05}
+--- !u!114 &449441342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449441337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stageID: 1
+  gOSA_F: 0
+  gOSA_T: 1
+  isItShouldBeDeactivated: 0
 --- !u!1 &449478634
 GameObject:
   m_ObjectHideFlags: 0
@@ -6547,7 +6553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b4f46ac58283242a1d88f2ebfe216e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fabricPrice: 35
+  FabricPrice: 0
   _item: {fileID: 1643859826}
   _tilliage: {fileID: 1334280378}
   _visualTemplate: {fileID: 1643859824}
@@ -6555,6 +6561,7 @@ MonoBehaviour:
   _itemIcon: {fileID: 1756538611}
   _buyCircle: {fileID: 457402225}
   _text: {fileID: 1379887091}
+  _stage: 0
 --- !u!65 &452606835
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6882,7 +6889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b4f46ac58283242a1d88f2ebfe216e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fabricPrice: 35
+  FabricPrice: 0
   _item: {fileID: 296080168}
   _tilliage: {fileID: 2132516029}
   _visualTemplate: {fileID: 296080166}
@@ -6890,6 +6897,7 @@ MonoBehaviour:
   _itemIcon: {fileID: 891430548}
   _buyCircle: {fileID: 385855110}
   _text: {fileID: 379880901}
+  _stage: 2
 --- !u!65 &471225015
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7548,7 +7556,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5$
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7575,7 +7583,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9097,7 +9105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stageID: 1
+  _stageID: 2
   gOSA_F: 1
   gOSA_T: 0
   isItShouldBeDeactivated: 0
@@ -11572,7 +11580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ac68bcddb7e6f146bdf4f2afd9e182e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fabricPrice: 0
+  FabricPrice: 0
   _item: {fileID: 6788498699370025594}
   _tilliage: {fileID: 0}
   _visualTemplate: {fileID: 9177374417827637128}
@@ -11580,6 +11588,7 @@ MonoBehaviour:
   _itemIcon: {fileID: 295432752}
   _buyCircle: {fileID: 0}
   _text: {fileID: 1533102623}
+  _stage: 0
 --- !u!65 &788443390
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16021,7 +16030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stageID: 1
+  _stageID: 3
   gOSA_F: 0
   gOSA_T: 1
   isItShouldBeDeactivated: 0
@@ -19227,7 +19236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stageID: 1
+  _stageID: 2
   gOSA_F: 0
   gOSA_T: 1
   isItShouldBeDeactivated: 1
@@ -22004,6 +22013,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1685029780}
   - component: {fileID: 1685029779}
+  - component: {fileID: 1685029781}
   m_Layer: 0
   m_Name: MainSys
   m_TagString: Untagged
@@ -22023,6 +22033,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91600f71484e1b44495df4416214c616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _walletInstance: {fileID: 156228724}
+  _buyersFabric: {fileID: 1685029781}
 --- !u!4 &1685029780
 Transform:
   m_ObjectHideFlags: 0
@@ -22039,6 +22051,20 @@ Transform:
   - {fileID: 2139168417}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1685029781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685029777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c36bd5770af7b45a305b24efc59217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buyers:
+  - {fileID: 8979414411842433034}
 --- !u!1 &1689681210
 GameObject:
   m_ObjectHideFlags: 0
@@ -22710,6 +22736,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1717949748}
+  - component: {fileID: 1717949749}
   m_Layer: 0
   m_Name: StrawberryFabric2
   m_TagString: Untagged
@@ -22737,6 +22764,22 @@ Transform:
   - {fileID: 296080167}
   m_Father: {fileID: 197809349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1717949749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717949747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stageID: 1
+  gOSA_F: 0
+  gOSA_T: 1
+  isItShouldBeDeactivated: 0
 --- !u!4 &1726279455 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4863069348827460, guid: 63e523ab5d9ce7348b431ae1d689a54d, type: 3}
@@ -25264,6 +25307,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2012347934}
+  - component: {fileID: 2012347935}
   m_Layer: 0
   m_Name: StrawberryFabric3
   m_TagString: Untagged
@@ -25291,6 +25335,22 @@ Transform:
   - {fileID: 1643859825}
   m_Father: {fileID: 197809349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2012347935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012347933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stageID: 2
+  gOSA_F: 0
+  gOSA_T: 1
+  isItShouldBeDeactivated: 0
 --- !u!1 &2020866600
 GameObject:
   m_ObjectHideFlags: 0
@@ -41697,7 +41757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ef82103e8a267499b543e620cd95a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stageID: 1
+  _stageID: 12121212
   gOSA_F: 0
   gOSA_T: 1
   isItShouldBeDeactivated: 0

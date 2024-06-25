@@ -4,7 +4,6 @@ using Zenject;
 public class Going2CashierState : BaseState<BuyerStateMachine.BuyerStates>
 {
     private BuyerStateMachine _stateMachine;
-    private Transform _cashierPos;
     public Going2CashierState(BuyerStateMachine.BuyerStates state,
     BuyerStateMachine CurrentStateMachine) : base(state)
     {
@@ -13,20 +12,15 @@ public class Going2CashierState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Enter2State()
     {
-        _stateMachine.Agent.SetDestination(_cashierPos.position);
+        Debug.Log("вошел в состояние");
+        _stateMachine.Agent.SetDestination(_stateMachine.Storage.CashierPosition.position);
     }
 
     public override void Exit2State()
     {
-        throw new System.NotImplementedException();
     }
 
     public override void UpdateState()
     {
-        throw new System.NotImplementedException();
-    }
-    [Inject]private void GetCashierPosition(Storage storage)
-    {
-        _cashierPos = storage.CashierPosition.transform;
     }
 }
