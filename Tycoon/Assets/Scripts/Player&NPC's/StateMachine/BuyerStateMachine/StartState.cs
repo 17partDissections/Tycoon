@@ -13,8 +13,8 @@ public class StartState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Enter2State()
     {
-        //_animator.SetBool(_stateMachine.Walking, true);
-        _stateMachine.Agent.SetDestination(_stateMachine.WayPoint.transform.position);
+        _stateMachine.Animator.SetBool(_stateMachine.waiting, false);
+        _stateMachine.Agent.SetDestination(_stateMachine.WayPoint);
     }
 
     public override void Exit2State()
@@ -24,7 +24,7 @@ public class StartState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void UpdateState()
     {
-        if (_stateMachine.Agent.remainingDistance <0.1f)
+        if (_stateMachine.Agent.remainingDistance <0.5f)
         {
             ChangeStateAction(BuyerStateMachine.BuyerStates.ThinkinState);
         }

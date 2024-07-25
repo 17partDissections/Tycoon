@@ -5,19 +5,23 @@ public class Going2CashierState : BaseState<BuyerStateMachine.BuyerStates>
 {
     private BuyerStateMachine _stateMachine;
     public Going2CashierState(BuyerStateMachine.BuyerStates state,
-    BuyerStateMachine CurrentStateMachine) : base(state)
+    BuyerStateMachine currentStateMachine) : base(state)
     {
-        _stateMachine = CurrentStateMachine;
+        _stateMachine = currentStateMachine;
     }
 
     public override void Enter2State()
     {
-        Debug.Log("вошел в состояние");
-        _stateMachine.Agent.SetDestination(_stateMachine.Storage.CashierPosition.position);
+        _stateMachine.Animator.SetBool(_stateMachine.waiting, false);
+        _stateMachine.CurrentItemInList = ItemName.Cashier;
+        _stateMachine.Agent.SetDestination(_stateMachine.Storage.GetPosition(ItemName.Cashier));
+        _stateMachine.Storage.ChangePositionInQueue(ItemName.Cashier, true);
+        _stateMachine.Storage.IShowcaseDictionary[ItemName.Cashier].BuyerHasGoneSignal += _stateMachine.MovingForwardInQueue;
     }
 
     public override void Exit2State()
     {
+        _stateMachine.Storage.IShowcaseDictionary[ItemName.Cashier].BuyerHasGoneSignal -= _stateMachine.MovingForwardInQueue;
     }
 
     public override void UpdateState()

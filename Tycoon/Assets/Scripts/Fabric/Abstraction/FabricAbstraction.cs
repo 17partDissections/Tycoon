@@ -12,6 +12,7 @@ public abstract class FabricAbstraction : MonoBehaviour
     [SerializeField] private Item _item;
     [SerializeField] private GameObject _tilliage;
     [SerializeField] private GameObject _visualTemplate;
+    [SerializeField] private bool _isItHaveTilliage = true;
     private Item _itemCopy;
     [SerializeField] private int _growSpeed;
     public Action<int> GrowSignal;
@@ -46,7 +47,7 @@ public abstract class FabricAbstraction : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("��������� ������������ ���������� �������� � �������");
+                    Debug.Log("Backpack is full");
                 }
             }
         }
@@ -106,7 +107,8 @@ public abstract class FabricAbstraction : MonoBehaviour
             _buyed = true;
             _canvas.OnlyIcon();
             gameObject.SetActive(true);
-            _tilliage.SetActive(true);
+            if(_isItHaveTilliage)
+                _tilliage.SetActive(true);
             _eventbus.StageSignal.Invoke(_stage);
             if (_isCoroutineStarted == false)
             {

@@ -6,71 +6,108 @@ using Zenject;
 
 public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerStates>
 {
+    public ObjectPool<BuyerStateMachine> ObjectPool;
     public Animator Animator;
-    public Transform WayPoint;
+    public Vector3 WayPoint;
     public NavMeshAgent Agent;
     public BackpackBuyer BackpackBuyer;
+    public EventBus EventBus;
     public Storage Storage { get; private set; }
 
-    public ItemName[] WannaBuy  = new ItemName[3];
+    public ItemName[] WannaBuy = new ItemName[3];
+    public ItemName CurrentItemInList;
+    public int NumerationOfBuyerInQueue;
 
-    
-    
 
-
-    public enum BuyerStates 
+    public enum BuyerStates
     {
         StartState,
         ThinkinState,
         Going2ItemState,
         Going2CashierState,
-        Waiting4DaWaiter,
-        RunAway,
+        Waiting4DaWaiterState,
+        RunAwayState,
     }
 
 
-    [HideInInspector] public int Idle;
-    [HideInInspector] public int Walking;
+    [HideInInspector] public int waiting;
 
 
 
-    private void Start()
+    private void Awake()
     {
-        Idle = Animator.StringToHash("idle");
-        Walking = Animator.StringToHash("walking");
+        waiting = Animator.StringToHash("Waiting");
 
-       StartState StartState = new StartState(BuyerStates.StartState, this);
-        States.Add(BuyerStates.StartState,StartState);
+        StartState StartState = new StartState(BuyerStates.StartState, this);
+        States.Add(BuyerStates.StartState, StartState);
         ThinkinState ThinkinState = new ThinkinState(BuyerStates.ThinkinState, this);
         States.Add(BuyerStates.ThinkinState, ThinkinState);
         Going2ItemState Going2ItemState = new Going2ItemState(BuyerStates.Going2ItemState, this);
         States.Add(BuyerStates.Going2ItemState, Going2ItemState);
         Going2CashierState Going2CashierState = new Going2CashierState(BuyerStates.Going2CashierState, this);
         States.Add(BuyerStates.Going2CashierState, Going2CashierState);
+        RunAwayState RunAwayState = new RunAwayState(BuyerStates.RunAwayState, this);
+        States.Add(BuyerStates.RunAwayState, RunAwayState);
         StartMachine(BuyerStates.StartState);
-
-        foreach (var item in States)
-        {
-            Debug.Log(item.Key.ToString());
-        }
+        Debug.Log("STATE MACHINE HAS BEEN STARTED");
     }
-    public void Init(Storage storage)
+    [Inject]
+    public void Init(Storage storage, EventBus eventBus)
     {
         Storage = storage;
-        Debug.Log(Storage);
-
+        EventBus = eventBus;
     }
     public void ChangeStateFromMachine(BuyerStates state)
     {
         ChangeActionFromChildren(state);
     }
-    public Transform GetWannaBuyObjPosition(ItemName item2find)
+    public Vector3 GetWannaBuyObjPosition(ItemName item2find)
     {
-        Transform foundPosition = Storage.GetPosition(item2find);
+        Vector3 foundPosition = Storage.GetPosition(item2find);
         return foundPosition;
     }
+    
+    public void Subscribe2NewItem(ItemName itemName)
+    {
+        Going2ItemState going2ItemState = States[BuyerStates.Going2ItemState] as Going2ItemState;
+        going2ItemState.Subscribe2NewItem(itemName);
+    }
+    private Vector3 CalcPositionInQueue(DirectionOfQueue directionOfQueue, Transform firstPosition, int numerationInQueue)
+    {
 
+        Vector3 positionInQueue = firstPosition.position;
+        Debug.Log(numerationInQueue);
+        if (numerationInQueue == 1)
+            return positionInQueue;
+        else
+        {
+            switch (directionOfQueue)
+            {
+                case DirectionOfQueue.South:
+                    positionInQueue += (Vector3.back) * (numerationInQueue);
+                    break;
+                case DirectionOfQueue.North:
+                    positionInQueue += (Vector3.forward) * (numerationInQueue);
+                    break;
+                case DirectionOfQueue.West:
+                    positionInQueue += (Vector3.left) * (numerationInQueue);
+                    break;
+                case DirectionOfQueue.East:
+                    positionInQueue += (Vector3.right) * (numerationInQueue);
+                    break;
+            }
 
+            return positionInQueue;
+        }
+
+    }
+    public void MovingForwardInQueue()
+    {
+        NumerationOfBuyerInQueue = Mathf.Clamp(NumerationOfBuyerInQueue-1, 0, 1000);
+        Agent.SetDestination(CalcPositionInQueue(Storage.DirectionOfQueue[CurrentItemInList],
+            Storage.IShowcaseDictionary[CurrentItemInList].FirstPointOfQueue, NumerationOfBuyerInQueue));
+
+    }
 
 
 

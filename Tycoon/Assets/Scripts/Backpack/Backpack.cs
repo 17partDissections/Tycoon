@@ -21,6 +21,7 @@ public abstract class Backpack : MonoBehaviour
             item.transform.position = Vector3.zero;
             SortItem();
         }
+        
 
     }
 
@@ -60,6 +61,20 @@ public abstract class Backpack : MonoBehaviour
         }
         return null;
 
+    }
+    public void DestroyAllItems()
+    {
+        foreach (var item in _items)
+        {
+            Destroy(item.gameObject);
+
+        }
+        _items.Clear();
+    }
+
+    public List<Item> GiveItemsList()
+    {
+        return _items;
     }
     public bool IsBackpackNotFull()
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,15 +6,35 @@ using UnityEngine;
 
 public class Wallet : MonoBehaviour
 {
-    public int CoinsAmount;
-    private TextMeshProUGUI _visualCoins;
+    private int _coinsAmount;
+    public int CoinsAmount
+    {
+        get
+        {
+            return _coinsAmount;
+        }
+        set
+        {
+            _coinsAmount = value;
+            _addMoneySignal?.Invoke();
+        }
+    }
     [Range(0, 160)] [SerializeField] private int _startCoinsAmount;
+    private TextMeshProUGUI _visualCoins;
+    private Action _addMoneySignal;
+
 
     void Start()
     {
         CoinsAmount = _startCoinsAmount;
         _visualCoins = GetComponentInChildren<TextMeshProUGUI>();
-        _visualCoins.text = CoinsAmount.ToString();
+        PrintMoney();
+        _addMoneySignal += PrintMoney;
+    }
+
+    private void PrintMoney()
+    {
+        _visualCoins.text = _coinsAmount.ToString();
     }
 
     public bool Trying2BuySmthng(int price)
@@ -21,7 +42,7 @@ public class Wallet : MonoBehaviour
        if(CoinsAmount - price >= 0)
         {
             CoinsAmount -= price;
-            _visualCoins.text = CoinsAmount.ToString();
+            PrintMoney();
             return true;
         }
        else

@@ -1,7 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
+using System.Collections;
 
 public class ThinkinState : BaseState<BuyerStateMachine.BuyerStates>
 {
@@ -14,6 +12,7 @@ public class ThinkinState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Enter2State()
     {
+        _stateMachine.Animator.SetBool(_stateMachine.waiting, true);
         ItemName[] list = _stateMachine.Storage.GetAviableItems();
         for (int i = 0; i < _stateMachine.WannaBuy.Length; i++)
         {
@@ -27,7 +26,6 @@ public class ThinkinState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Exit2State()
     {
-
     }
 
     public override void UpdateState()

@@ -1,10 +1,14 @@
 
 public enum ItemName 
 {
+
     //FOOD
     Strawberry,
     Banana,
     Apple,
-    Watermelon
+    Watermelon,
+
+    //OTHER
+    Cashier
 }
 
