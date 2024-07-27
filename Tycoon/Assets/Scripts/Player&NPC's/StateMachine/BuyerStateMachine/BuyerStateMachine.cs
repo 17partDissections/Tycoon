@@ -49,7 +49,6 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         RunAwayState RunAwayState = new RunAwayState(BuyerStates.RunAwayState, this);
         States.Add(BuyerStates.RunAwayState, RunAwayState);
         StartMachine(BuyerStates.StartState);
-        Debug.Log("STATE MACHINE HAS BEEN STARTED");
     }
     [Inject]
     public void Init(Storage storage, EventBus eventBus)

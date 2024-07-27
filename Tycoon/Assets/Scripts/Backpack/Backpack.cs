@@ -4,17 +4,15 @@ using UnityEngine;
 public abstract class Backpack : MonoBehaviour
 {
 
-    protected List<Item> _items = new List<Item>();
-    private int _currentBackpackCapacity;
+    public List<Item> _items = new List<Item>();
     [SerializeField] private int _maxBackpackCapacity;
     [SerializeField] private Transform _itemStartPosition;
 
 
     public void SaveItem(Item item)
     {
-        if (_currentBackpackCapacity < _maxBackpackCapacity)
+        if (_items.Count < _maxBackpackCapacity)
         {
-        _currentBackpackCapacity++;
         _items.Add(item);
             item.gameObject.SetActive(true);
             item.transform.parent = _itemStartPosition;
@@ -52,7 +50,6 @@ public abstract class Backpack : MonoBehaviour
         {
             if (item.ItemName == itemType)
             {
-                _currentBackpackCapacity--;
                 Destroy(item.gameObject);
                 _items.Remove(item);
                 SortItem();
@@ -78,7 +75,7 @@ public abstract class Backpack : MonoBehaviour
     }
     public bool IsBackpackNotFull()
     {
-        if(_currentBackpackCapacity != _maxBackpackCapacity)
+        if(_items.Count != _maxBackpackCapacity)
         {
             return true;
         }

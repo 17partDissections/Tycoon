@@ -79,32 +79,32 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             BackpackWasBuyer(backpackAbstraction);
         }
     }
-        private void BackpackWasBuyer(Backpack backpackAbstraction)
+    private void BackpackWasBuyer(Backpack backpackAbstraction)
     {
-
+        
         if (backpackAbstraction.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine stateMachine))
+        {
+            var sameObjects = stateMachine.WannaBuy.Where(x => x == _item.ItemName);
+            List<ItemName> RepeatingItemsList = new List<ItemName>(sameObjects);
+
+            var backpackBuyer = backpackAbstraction as BackpackBuyer;
+            backpackBuyer.RepeatingItems.Clear();
+            backpackBuyer.RepeatingItems.AddRange(RepeatingItemsList);
+            Debug.Log("repeatingItems " + RepeatingItemsList.Count);
+            if (RepeatingItemsList.Count() > 0)
             {
-                var sameObjects = stateMachine.WannaBuy.Where(x => x == _item.ItemName);
-                List<ItemName> RepeatingItemsList = new List<ItemName>(sameObjects);
-
-                var backpackBuyer = backpackAbstraction as BackpackBuyer;
-                backpackBuyer.RepeatingItems.Clear();
-                backpackBuyer.RepeatingItems.AddRange(RepeatingItemsList);
-                if (RepeatingItemsList.Count() > 0)
-                {
-                    BuyerEnteredTrigger.Add(backpackAbstraction as BackpackBuyer);
-                    
-
-                    GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
-
-                }
-
-
-
-
+                Debug.Log("Adding2List");
+                BuyerEnteredTrigger.Add(backpackAbstraction as BackpackBuyer);
+                GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
 
             }
+
+
+
+
+
         }
+    }
 
         public void BuyShowcase()
         {
@@ -133,29 +133,30 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             }
         }
 
-        private void GiveItems2Buyer(Backpack backpackAbstraction)
+    private void GiveItems2Buyer(Backpack backpackAbstraction)
+    {
+        Debug.Log(backpackAbstraction.IsBackpackNotFull());
+        if (backpackAbstraction.IsBackpackNotFull() != false)
         {
 
-            if (backpackAbstraction.IsBackpackNotFull() != false)
-            {
-                var itemCopyOfGameObject = Instantiate(_item, gameObject.transform);
-                var backpackBuyer = backpackAbstraction as BackpackBuyer;
-                backpackBuyer.SaveItem(itemCopyOfGameObject);
-                _enabledItems4Buyers--;
-                backpackBuyer.RepeatingItems.RemoveAt(0);
-                //GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
-                var ActiveItems = _showcaseInventory.FindAll(x => x.isActiveAndEnabled);
-                ActiveItems[0].gameObject.SetActive(false);
-                backpackBuyer.WannaBuy.Remove(_item.ItemName);
-                if (backpackAbstraction.IsBackpackNotFull() == false)
-                    RemovingFromBuyerEnteredTrigger(backpackAbstraction as BackpackBuyer);
-            }
-            else
-            {
+            var itemCopyOfGameObject = Instantiate(_item, gameObject.transform);
+            var backpackBuyer = backpackAbstraction as BackpackBuyer;
+            backpackBuyer.SaveItem(itemCopyOfGameObject);
+            _enabledItems4Buyers--;
+            backpackBuyer.RepeatingItems.RemoveAt(0);
+            //GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
+            var ActiveItems = _showcaseInventory.FindAll(x => x.isActiveAndEnabled);
+            ActiveItems[0].gameObject.SetActive(false);
+            backpackBuyer.WannaBuy.Remove(_item.ItemName);
+            if (backpackAbstraction.IsBackpackNotFull() == false)
                 RemovingFromBuyerEnteredTrigger(backpackAbstraction as BackpackBuyer);
-            }
-
         }
+        else
+        {
+            RemovingFromBuyerEnteredTrigger(backpackAbstraction as BackpackBuyer);
+        }
+
+    }
 
     private void RemovingFromBuyerEnteredTrigger(BackpackBuyer backpackBuyer)
     {
@@ -177,7 +178,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         BuyerHasGoneSignal?.Invoke();
     }
 
-
+    
     private void BackpackWasWorker()
     {
         var nonActiveItemsBeforeAdding = _showcaseInventory.FindAll(x => !x.isActiveAndEnabled);

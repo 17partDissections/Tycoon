@@ -17,6 +17,7 @@ public class RunAwayState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Exit2State()
     {
+        _stateMachine.BackpackBuyer.DestroyAllItems();
     }
 
     public override void UpdateState()
