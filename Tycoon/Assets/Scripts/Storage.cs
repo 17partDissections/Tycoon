@@ -43,51 +43,51 @@ public class Storage
     {
         DirectionOfQueue.Add(item, direction);
     }
-    public void ChangePositionInQueue(ItemName item, bool AddNewBuyer)
-    {
+    //public void ChangePositionInQueue(ItemName item, bool AddNewBuyer)
+    //{
 
-        var lastPositionInQueue = _positionInQueueOfItems[item];
-        if (AddNewBuyer)
-        {
-            IShowcaseDictionary[item].PplInQueueAmount++;
-            switch (DirectionOfQueue[item])
-            {
-                case global::DirectionOfQueue.South:
-                    lastPositionInQueue += (Vector3.back);
-                    break;
-                case global::DirectionOfQueue.North:
-                    lastPositionInQueue += (Vector3.forward);
-                    break;
-                case global::DirectionOfQueue.West:
-                    lastPositionInQueue += (Vector3.left);
-                    break;
-                case global::DirectionOfQueue.East:
-                    lastPositionInQueue += (Vector3.right);
-                    break;
-            }
-            _positionInQueueOfItems[item] = lastPositionInQueue;
-        }
-        else
-        {
-            IShowcaseDictionary[item].PplInQueueAmount--;
-            switch (DirectionOfQueue[item])
-            {
-                case global::DirectionOfQueue.South:
-                    lastPositionInQueue += (Vector3.forward);
-                    break;
-                case global::DirectionOfQueue.North:
-                    lastPositionInQueue += (Vector3.back);
-                    break;
-                case global::DirectionOfQueue.West:
-                    lastPositionInQueue += (Vector3.right);
-                    break;
-                case global::DirectionOfQueue.East:
-                    lastPositionInQueue += (Vector3.left);
-                    break;
-            }
-            _positionInQueueOfItems[item] = lastPositionInQueue;
-        }
-    }
+    //    var lastPositionInQueue = _positionInQueueOfItems[item];
+    //    if (AddNewBuyer)
+    //    {
+    //        IShowcaseDictionary[item].PplInQueueAmount++;
+    //        switch (DirectionOfQueue[item])
+    //        {
+    //            case global::DirectionOfQueue.South:
+    //                lastPositionInQueue += (Vector3.back);
+    //                break;
+    //            case global::DirectionOfQueue.North:
+    //                lastPositionInQueue += (Vector3.forward);
+    //                break;
+    //            case global::DirectionOfQueue.West:
+    //                lastPositionInQueue += (Vector3.left);
+    //                break;
+    //            case global::DirectionOfQueue.East:
+    //                lastPositionInQueue += (Vector3.right);
+    //                break;
+    //        }
+    //        _positionInQueueOfItems[item] = lastPositionInQueue;
+    //    }
+    //    else
+    //    {
+    //        //IShowcaseDictionary[item].PplInQueueAmount--;
+    //        switch (DirectionOfQueue[item])
+    //        {
+    //            case global::DirectionOfQueue.South:
+    //                lastPositionInQueue += (Vector3.forward);
+    //                break;
+    //            case global::DirectionOfQueue.North:
+    //                lastPositionInQueue += (Vector3.back);
+    //                break;
+    //            case global::DirectionOfQueue.West:
+    //                lastPositionInQueue += (Vector3.right);
+    //                break;
+    //            case global::DirectionOfQueue.East:
+    //                lastPositionInQueue += (Vector3.left);
+    //                break;
+    //        }
+    //        _positionInQueueOfItems[item] = lastPositionInQueue;
+    //    }
+    //}
     public void AddCashierPosition(Transform cashierTransform)
     {
          CashierPosition = cashierTransform;

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.ProBuilder.MeshOperations;
 using Zenject;
 
 
@@ -17,8 +18,7 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     public ItemName[] WannaBuy = new ItemName[3];
     public ItemName CurrentItemInList;
     public int NumerationOfBuyerInQueue;
-
-
+    private bool _isBuyerLast = true;
     public enum BuyerStates
     {
         StartState,
@@ -62,7 +62,8 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     }
     public Vector3 GetWannaBuyObjPosition(ItemName item2find)
     {
-        Vector3 foundPosition = Storage.GetPosition(item2find);
+        Vector3 foundPosition = CalcPositionInQueue(Storage.DirectionOfQueue[item2find],
+            Storage.IShowcaseDictionary[item2find].FirstPointOfQueue, NumerationOfBuyerInQueue);
         return foundPosition;
     }
     
@@ -75,7 +76,6 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     {
 
         Vector3 positionInQueue = firstPosition.position;
-        Debug.Log(numerationInQueue);
         if (numerationInQueue == 1)
             return positionInQueue;
         else
@@ -99,10 +99,20 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
             return positionInQueue;
         }
 
+
     }
     public void MovingForwardInQueue()
     {
-        NumerationOfBuyerInQueue = Mathf.Clamp(NumerationOfBuyerInQueue-1, 0, 1000);
+        
+        if (NumerationOfBuyerInQueue > 0 && !_isBuyerLast)
+            NumerationOfBuyerInQueue--;
+        else if(NumerationOfBuyerInQueue > 0 && _isBuyerLast)
+        {
+            NumerationOfBuyerInQueue++;
+            _isBuyerLast = false;
+        }
+        Debug.Log(CalcPositionInQueue(Storage.DirectionOfQueue[CurrentItemInList],
+            Storage.IShowcaseDictionary[CurrentItemInList].FirstPointOfQueue, NumerationOfBuyerInQueue));
         Agent.SetDestination(CalcPositionInQueue(Storage.DirectionOfQueue[CurrentItemInList],
             Storage.IShowcaseDictionary[CurrentItemInList].FirstPointOfQueue, NumerationOfBuyerInQueue));
 

@@ -90,10 +90,9 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             var backpackBuyer = backpackAbstraction as BackpackBuyer;
             backpackBuyer.RepeatingItems.Clear();
             backpackBuyer.RepeatingItems.AddRange(RepeatingItemsList);
-            Debug.Log("repeatingItems " + RepeatingItemsList.Count);
+            
             if (RepeatingItemsList.Count() > 0)
             {
-                Debug.Log("Adding2List");
                 BuyerEnteredTrigger.Add(backpackAbstraction as BackpackBuyer);
                 GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
 
@@ -165,13 +164,17 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         if (backpackBuyer.WannaBuy.Count == 0)
         {
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
-            buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
+            //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
+            Debug.Log("ShowcaseReMovingForwardInQueue");
+            buyerStateMachine.MovingForwardInQueue();
         }
         else
         {
 
             buyerStateMachine.Agent.SetDestination(buyerStateMachine.GetWannaBuyObjPosition(backpackBuyer.WannaBuy[0]));
-            buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
+            //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
+            Debug.Log("ShowcaseReMovingForwardInQueue");
+            buyerStateMachine.MovingForwardInQueue();
             buyerStateMachine.Subscribe2NewItem(_item.ItemName);
 
         }

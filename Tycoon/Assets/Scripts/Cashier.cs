@@ -35,6 +35,7 @@ public class Cashier : MonoBehaviour, IShowcase
 
 
     }
+    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -77,9 +78,13 @@ public class Cashier : MonoBehaviour, IShowcase
             _finalCost += item.Price;
         }
         //графическое добавление денег, как подбираемые объекты
+
         backpack.DestroyAllItems();
-        backpack.GetComponent<BuyerStateMachine>()?.Storage.ChangePositionInQueue(ItemName.Cashier, false);
-        backpack.GetComponent<BuyerStateMachine>()?.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.RunAwayState);
+        _wallet.CoinsAmount += _finalCost;
+        _finalCost = 0;
+        backpack.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
+        buyerStateMachine.MovingForwardInQueue();
+        buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.RunAwayState);
         BuyerHasGoneSignal?.Invoke();
 
     }
@@ -90,7 +95,7 @@ public class Cashier : MonoBehaviour, IShowcase
         {
             SellItem(_waitingBuyers[0]);
             _waitingBuyers.RemoveAt(0);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2.5f);
         }
 
     }

@@ -6051,7 +6051,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: ca42994eed3e1664fa7dabd8216855d9, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 9eb750cfca3bc3949884042d5eda3abb, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &246604783
 GameObject:
@@ -10890,7 +10890,7 @@ MonoBehaviour:
   _tilliage: {fileID: 805909407}
   _visualTemplate: {fileID: 1048600941}
   _isItHaveTilliage: 1
-  _growSpeed: 1
+  _growSpeed: 7
   _itemIcon: {fileID: 1328865020}
   _buyCircle: {fileID: 1515465634}
   _text: {fileID: 2131724447}
@@ -11851,6 +11851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a47c4c09b646cf741810a0e328734229, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _items: []
   _maxBackpackCapacity: 5
   _itemStartPosition: {fileID: 2020866601}
 --- !u!65 &430241455
@@ -12114,7 +12115,7 @@ Transform:
   m_GameObject: {fileID: 446462410}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.2, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.03, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12139,7 +12140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &449441338
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12354,12 +12355,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b4f46ac58283242a1d88f2ebfe216e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FabricPrice: 0
+  FabricPrice: 60
   _item: {fileID: 1643859826}
   _tilliage: {fileID: 1334280378}
   _visualTemplate: {fileID: 1643859824}
   _isItHaveTilliage: 1
-  _growSpeed: 1
+  _growSpeed: 7
   _itemIcon: {fileID: 1756538611}
   _buyCircle: {fileID: 457402225}
   _text: {fileID: 1379887091}
@@ -12785,12 +12786,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b4f46ac58283242a1d88f2ebfe216e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FabricPrice: 0
+  FabricPrice: 45
   _item: {fileID: 296080168}
   _tilliage: {fileID: 2132516029}
   _visualTemplate: {fileID: 296080166}
   _isItHaveTilliage: 1
-  _growSpeed: 1
+  _growSpeed: 7
   _itemIcon: {fileID: 891430548}
   _buyCircle: {fileID: 385855110}
   _text: {fileID: 379880901}
@@ -15571,6 +15572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a49a8fcfa5196143bc954c821084fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _items: []
   _maxBackpackCapacity: 3
   _itemStartPosition: {fileID: 145695366}
   NumberInQueue: 0
@@ -37234,6 +37236,7 @@ GameObject:
   - component: {fileID: 1547982298}
   - component: {fileID: 1547982299}
   - component: {fileID: 1547982300}
+  - component: {fileID: 1547982301}
   m_Layer: 0
   m_Name: Cashier
   m_TagString: Untagged
@@ -37313,8 +37316,24 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.58}
+  m_Size: {x: 2.85, y: 1, z: 0.58}
   m_Center: {x: -0.35, y: 0, z: -0.095}
+--- !u!208 &1547982301
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547982296}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -1.26, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1553455388
 GameObject:
   m_ObjectHideFlags: 0
@@ -38082,6 +38101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a49a8fcfa5196143bc954c821084fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _items: []
   _maxBackpackCapacity: 3
   _itemStartPosition: {fileID: 2144404494}
   NumberInQueue: 0
@@ -40223,6 +40243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a49a8fcfa5196143bc954c821084fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _items: []
   _maxBackpackCapacity: 3
   _itemStartPosition: {fileID: 1654535145}
   NumberInQueue: 0
@@ -40624,7 +40645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buyerClonesOnScene: 0
-  MaxAmountOfBuyerClones: 4
+  MaxAmountOfBuyerClones: 2
 --- !u!1 &1686606145
 GameObject:
   m_ObjectHideFlags: 0
@@ -48338,6 +48359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a49a8fcfa5196143bc954c821084fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _items: []
   _maxBackpackCapacity: 3
   _itemStartPosition: {fileID: 24181504}
   NumberInQueue: 0

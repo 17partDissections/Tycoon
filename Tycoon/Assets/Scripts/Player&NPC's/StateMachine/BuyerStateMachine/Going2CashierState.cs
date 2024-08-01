@@ -15,13 +15,13 @@ public class Going2CashierState : BaseState<BuyerStateMachine.BuyerStates>
         _stateMachine.Animator.SetBool(_stateMachine.waiting, false);
         _stateMachine.CurrentItemInList = ItemName.Cashier;
         _stateMachine.Agent.SetDestination(_stateMachine.Storage.GetPosition(ItemName.Cashier));
-        _stateMachine.Storage.ChangePositionInQueue(ItemName.Cashier, true);
-        _stateMachine.Storage.IShowcaseDictionary[ItemName.Cashier].BuyerHasGoneSignal += _stateMachine.MovingForwardInQueue;
+        _stateMachine.Storage.IShowcaseDictionary[ItemName.Cashier].Subscribe2BuyerGoingSignal(_stateMachine.MovingForwardInQueue, ref _stateMachine.NumerationOfBuyerInQueue);
     }
 
     public override void Exit2State()
     {
-        _stateMachine.Storage.IShowcaseDictionary[ItemName.Cashier].BuyerHasGoneSignal -= _stateMachine.MovingForwardInQueue;
+        _stateMachine.Storage.IShowcaseDictionary[ItemName.Cashier].Unsubscribe2BuyerGoingSignal(_stateMachine.MovingForwardInQueue);
+
     }
 
     public override void UpdateState()
