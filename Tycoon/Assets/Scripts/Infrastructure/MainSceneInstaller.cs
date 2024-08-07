@@ -22,6 +22,16 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindEventBus();
         BindStorage();
         BindWallet();
+        BindQueueHandler();
+    }
+
+    private void BindQueueHandler()
+    {
+        Container
+            .Bind<QueueHandler>()
+            .FromNew()
+            .AsSingle()
+            .NonLazy();
     }
 
     private void BindMainInstllaersIntarface()

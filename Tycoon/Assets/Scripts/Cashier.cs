@@ -11,6 +11,7 @@ using static UnityEditor.Progress;
 public class Cashier : MonoBehaviour, IShowcase
 {
     private Wallet _wallet;
+    private QueueHandler _queueHandler;
     private int _finalCost;
     private bool _isWaiterOnDaDesk;
     private List<BackpackBuyer> _waitingBuyers = new List<BackpackBuyer>();
@@ -23,19 +24,20 @@ public class Cashier : MonoBehaviour, IShowcase
 
     public event Action BuyerHasGoneSignal;
 
-    [Inject] private void Construct(Storage storage, Wallet wallet)
+    [Inject]
+    private void Construct(Storage storage, Wallet wallet, QueueHandler queueHandler)
     {
         _lastPositionInQueue = _startOfQueuePosition.position;
         storage.AddCashierPosition(gameObject.transform);
         _wallet = wallet;
-
+        _queueHandler = queueHandler;
         storage.AddItem2Aviable(ItemName.Cashier, _lastPositionInQueue);
         storage.AddQueueDirection(ItemName.Cashier, _directionOfQueue);
         storage.AddShowcaseOrCashier(ItemName.Cashier, this);
 
 
     }
-    
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -65,7 +67,7 @@ public class Cashier : MonoBehaviour, IShowcase
         {
             _isWaiterOnDaDesk = false;
             StopAllCoroutines();
-            
+
 
         }
 
@@ -83,7 +85,9 @@ public class Cashier : MonoBehaviour, IShowcase
         _wallet.CoinsAmount += _finalCost;
         _finalCost = 0;
         backpack.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
-        buyerStateMachine.MovingForwardInQueue();
+        //buyerStateMachine.MovingForwardInQueue();
+
+        _queueHandler.MooveByersInQueue(ItemName.Cashier);
         buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.RunAwayState);
         BuyerHasGoneSignal?.Invoke();
 
@@ -91,7 +95,7 @@ public class Cashier : MonoBehaviour, IShowcase
 
     private IEnumerator WaiterWorkCoroutine()
     {
-        while (_isWaiterOnDaDesk == true && _waitingBuyers.Count>0)
+        while (_isWaiterOnDaDesk == true && _waitingBuyers.Count > 0)
         {
             SellItem(_waitingBuyers[0]);
             _waitingBuyers.RemoveAt(0);

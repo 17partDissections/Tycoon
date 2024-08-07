@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
 public class Storage 
 {
     private Dictionary<ItemName, Vector3> _positionInQueueOfItems = new Dictionary<ItemName, Vector3>();
     public Dictionary<ItemName, DirectionOfQueue> DirectionOfQueue = new Dictionary<ItemName, DirectionOfQueue>();
     public Dictionary<ItemName, IShowcase> IShowcaseDictionary = new Dictionary<ItemName, IShowcase>();
+
     public Transform CashierPosition;
 
     public void AddItem2Aviable(ItemName itemName, Vector3 vector3)

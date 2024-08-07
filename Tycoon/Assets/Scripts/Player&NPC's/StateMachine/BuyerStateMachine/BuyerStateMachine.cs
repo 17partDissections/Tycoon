@@ -13,6 +13,8 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     public NavMeshAgent Agent;
     public BackpackBuyer BackpackBuyer;
     public EventBus EventBus;
+    public QueueHandler QueueHandler;
+
     public Storage Storage { get; private set; }
 
     public ItemName[] WannaBuy = new ItemName[3];
@@ -51,10 +53,11 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         StartMachine(BuyerStates.StartState);
     }
     [Inject]
-    public void Init(Storage storage, EventBus eventBus)
+    public void Init(Storage storage, EventBus eventBus, QueueHandler queueHandler)
     {
         Storage = storage;
         EventBus = eventBus;
+        QueueHandler = queueHandler;
     }
     public void ChangeStateFromMachine(BuyerStates state)
     {
@@ -62,61 +65,17 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     }
     public Vector3 GetWannaBuyObjPosition(ItemName item2find)
     {
-        Vector3 foundPosition = CalcPositionInQueue(Storage.DirectionOfQueue[item2find],
-            Storage.IShowcaseDictionary[item2find].FirstPointOfQueue, NumerationOfBuyerInQueue);
+        Vector3 foundPosition = QueueHandler.CalcPositionInQueue(Storage.DirectionOfQueue[item2find],
+            Storage.IShowcaseDictionary[item2find].FirstPointOfQueue, Storage.IShowcaseDictionary[item2find].PplInQueueAmount);
         return foundPosition;
     }
-    
+
     public void Subscribe2NewItem(ItemName itemName)
     {
         Going2ItemState going2ItemState = States[BuyerStates.Going2ItemState] as Going2ItemState;
         going2ItemState.Subscribe2NewItem(itemName);
     }
-    private Vector3 CalcPositionInQueue(DirectionOfQueue directionOfQueue, Transform firstPosition, int numerationInQueue)
-    {
 
-        Vector3 positionInQueue = firstPosition.position;
-        if (numerationInQueue == 1)
-            return positionInQueue;
-        else
-        {
-            switch (directionOfQueue)
-            {
-                case DirectionOfQueue.South:
-                    positionInQueue += (Vector3.back) * (numerationInQueue);
-                    break;
-                case DirectionOfQueue.North:
-                    positionInQueue += (Vector3.forward) * (numerationInQueue);
-                    break;
-                case DirectionOfQueue.West:
-                    positionInQueue += (Vector3.left) * (numerationInQueue);
-                    break;
-                case DirectionOfQueue.East:
-                    positionInQueue += (Vector3.right) * (numerationInQueue);
-                    break;
-            }
-
-            return positionInQueue;
-        }
-
-
-    }
-    public void MovingForwardInQueue()
-    {
-        
-        if (NumerationOfBuyerInQueue > 0 && !_isBuyerLast)
-            NumerationOfBuyerInQueue--;
-        else if(NumerationOfBuyerInQueue > 0 && _isBuyerLast)
-        {
-            NumerationOfBuyerInQueue++;
-            _isBuyerLast = false;
-        }
-        Debug.Log(CalcPositionInQueue(Storage.DirectionOfQueue[CurrentItemInList],
-            Storage.IShowcaseDictionary[CurrentItemInList].FirstPointOfQueue, NumerationOfBuyerInQueue));
-        Agent.SetDestination(CalcPositionInQueue(Storage.DirectionOfQueue[CurrentItemInList],
-            Storage.IShowcaseDictionary[CurrentItemInList].FirstPointOfQueue, NumerationOfBuyerInQueue));
-
-    }
 
 
 

@@ -19,6 +19,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
     private EventBus _eventbus;
     private Storage _storage;
     private Wallet _playerWallet;
+    private QueueHandler _queueHandler;
     private Backpack _backpackAbstraction;
     private bool _buyed = false;
     private FabricsNShowcasesCanvas _canvas;
@@ -44,11 +45,12 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
     }
     [Inject]
-    private void Construct(EventBus bus, Storage storage, Wallet wallet)
+    private void Construct(EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler)
     {
         _eventbus = bus;
         _storage = storage;
         _playerWallet = wallet;
+        _queueHandler = queueHandler;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -75,13 +77,12 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         }
         else if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction) && backpackAbstraction.GetType().Name == nameof(BackpackBuyer))
         {
-
             BackpackWasBuyer(backpackAbstraction);
         }
     }
     private void BackpackWasBuyer(Backpack backpackAbstraction)
     {
-        
+
         if (backpackAbstraction.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine stateMachine))
         {
             var sameObjects = stateMachine.WannaBuy.Where(x => x == _item.ItemName);
@@ -90,47 +91,41 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             var backpackBuyer = backpackAbstraction as BackpackBuyer;
             backpackBuyer.RepeatingItems.Clear();
             backpackBuyer.RepeatingItems.AddRange(RepeatingItemsList);
-            
+
             if (RepeatingItemsList.Count() > 0)
             {
                 BuyerEnteredTrigger.Add(backpackAbstraction as BackpackBuyer);
                 GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
 
             }
-
-
-
-
-
         }
     }
 
-        public void BuyShowcase()
+    public void BuyShowcase()
+    {
+        if (_playerWallet.Trying2BuySmthng(ShowcasePrice) == true)
         {
-            if (_playerWallet.Trying2BuySmthng(ShowcasePrice) == true)
-            {
-                _buyed = true;
-                _canvas.OnlyIcon();
-                _eventbus.StageSignal.Invoke(2);
-            }
-
+            _buyed = true;
+            _canvas.OnlyIcon();
+            _eventbus.StageSignal.Invoke(2);
         }
+    }
 
-        private void GiveItems2Buyer(Backpack backpackAbstraction, List<ItemName> RepeatingItemsList)
+    private void GiveItems2Buyer(Backpack backpackAbstraction, List<ItemName> RepeatingItemsList)
+    {
+        if (_enabledItems4Buyers > 0)
         {
-            if (_enabledItems4Buyers > 0)
+            GiveItems2Buyer(backpackAbstraction);
+            if (RepeatingItemsList.Count() == 0)
             {
-                GiveItems2Buyer(backpackAbstraction);
-                if (RepeatingItemsList.Count() == 0)
-                {
-                    BuyerEnteredTrigger.Remove(backpackAbstraction as BackpackBuyer);
-                }
-                else
-                {
-                    GiveItems2Buyer(backpackAbstraction, RepeatingItemsList);
-                }
+                BuyerEnteredTrigger.Remove(backpackAbstraction as BackpackBuyer);
+            }
+            else
+            {
+                GiveItems2Buyer(backpackAbstraction, RepeatingItemsList);
             }
         }
+    }
 
     private void GiveItems2Buyer(Backpack backpackAbstraction)
     {
@@ -166,7 +161,8 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
             Debug.Log("ShowcaseReMovingForwardInQueue");
-            buyerStateMachine.MovingForwardInQueue();
+            _queueHandler.MooveByersInQueue(_item.ItemName);
+            //buyerStateMachine.MovingForwardInQueue();
         }
         else
         {
@@ -174,14 +170,15 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             buyerStateMachine.Agent.SetDestination(buyerStateMachine.GetWannaBuyObjPosition(backpackBuyer.WannaBuy[0]));
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
             Debug.Log("ShowcaseReMovingForwardInQueue");
-            buyerStateMachine.MovingForwardInQueue();
+            //buyerStateMachine.MovingForwardInQueue();
             buyerStateMachine.Subscribe2NewItem(_item.ItemName);
+            _queueHandler.MooveByersInQueue(_item.ItemName);
 
         }
         BuyerHasGoneSignal?.Invoke();
     }
 
-    
+
     private void BackpackWasWorker()
     {
         var nonActiveItemsBeforeAdding = _showcaseInventory.FindAll(x => !x.isActiveAndEnabled);
@@ -212,7 +209,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
 
 }
-public enum DirectionOfQueue 
+public enum DirectionOfQueue
 {
     East,
     West,
