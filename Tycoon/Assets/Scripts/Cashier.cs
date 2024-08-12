@@ -17,12 +17,13 @@ public class Cashier : MonoBehaviour, IShowcase
     private Vector3 _lastPositionInQueue;
     [SerializeField] private DirectionOfQueue _directionOfQueue;
     [SerializeField] private List<GameObject> _moneyStages;
-    [SerializeField] private GameObject _moneyObj;
+    [SerializeField] private List<Transform> _moneyObj;
     private Coroutine _cashCoroutine;
+    private Coroutine _cashierWorkCoroutine;
     private AudioSources _audioSources;
 
-    
-    
+
+
 
     public int PplInQueueAmount { get; set; }
     public Transform FirstPointOfQueue { get => _startOfQueuePosition; set => _startOfQueuePosition = value; }
@@ -40,8 +41,6 @@ public class Cashier : MonoBehaviour, IShowcase
         storage.AddItem2Aviable(ItemName.Cashier, _lastPositionInQueue);
         storage.AddQueueDirection(ItemName.Cashier, _directionOfQueue);
         storage.AddShowcaseOrCashier(ItemName.Cashier, this);
-        
-
     }
 
 
@@ -50,103 +49,90 @@ public class Cashier : MonoBehaviour, IShowcase
         if (other.GetComponent<PlayerHotkeys>() != null)
         {
             _isWorkerOnDaDesk = true;
-            StartCoroutine(WaiterWorkCoroutine());
-            if(_finalCost > 0)
+            _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
+            if (_finalCost > 0)
                 StartCoroutine(BringDaMoney(other));
         }
-        other.TryGetComponent<Backpack>(out Backpack backpack);
-        if (backpack is BackpackBuyer && !backpack.IsBackpackNotFull())
-        {
-            List<Item> items = backpack.GiveItemsList();
-            foreach (Item item in items)
+        if (other.TryGetComponent<Backpack>(out Backpack backpack))
+            if (backpack is BackpackBuyer && !backpack.IsBackpackNotFull())
             {
-                _finalCost += item.Price;
+                Debug.Log(_isWorkerOnDaDesk);
+                if (_isWorkerOnDaDesk)
+                    SellItem(backpack);
+                else
+                    _waitingBuyers.Add(backpack as BackpackBuyer);
             }
-            Debug.Log(_finalCost);
-            if (_isWorkerOnDaDesk)
-            {
-                StartCoroutine(BringDaMoney(other));
-                SellItem(backpack);
-                if (_finalCost > 0)
-                    StartCoroutine(BringDaMoney(other));
-            }
-            else
-                _waitingBuyers.Add(backpack as BackpackBuyer);
-        }
-
-
-
     }
     private void OnTriggerExit(Collider other)
     {
-        other.TryGetComponent<Backpack>(out Backpack backpack);
-        if (backpack is BackpackWorker)
-        {
-            _isWorkerOnDaDesk = false;
-            //StopAllCoroutines();
-
-
-        }
-
+        if (other.TryGetComponent<Backpack>(out Backpack backpack))
+            if (backpack is BackpackWorker)
+            {
+                _isWorkerOnDaDesk = false;
+                StopCoroutine(_cashierWorkCoroutine);
+            }
     }
     private void SellItem(Backpack backpack)
     {
+        foreach (Item item in backpack.GiveItemsList())
+            _finalCost += item.Price;
 
         //графическое добавление денег, как подбираемые объекты
         switch (_finalCost)
         {
-            //case int i when i < 0 and > 5
+            //case int i when i < 0 && > 5
             case > 0 and <= 15:
                 _moneyStages[0].SetActive(true);
-                Debug.Log(0);
+                Debug.Log("Stage= " + 0);
                 break;
             case > 15 and <= 30:
                 _moneyStages[1].SetActive(true);
-                Debug.Log(1);
+                Debug.Log("Stage= " + 1);
                 break;
             case > 30 and <= 200:
                 _moneyStages[2].SetActive(true);
-                Debug.Log(2);
+                Debug.Log("Stage= " + 2);
                 break;
         }
         backpack.DestroyAllItems();
         _audioSources.PlaySound(_audioSources.Purchase);
-        _wallet.CoinsAmount += _finalCost;
-        _finalCost = 0;
         backpack.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
-        //buyerStateMachine.MovingForwardInQueue();
-
         _queueHandler.MoveBuyersInQueue(ItemName.Cashier);
         buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.RunAwayState);
-        BuyerHasGoneSignal?.Invoke();
-
     }
 
     private IEnumerator WaiterWorkCoroutine()
     {
-        while (_isWorkerOnDaDesk == true && _waitingBuyers.Count > 0)
+        while (true)
         {
-            SellItem(_waitingBuyers[0]);
-            _waitingBuyers.RemoveAt(0);
+            if (_waitingBuyers.Count > 0)
+            {
+                SellItem(_waitingBuyers[0]);
+                _waitingBuyers.RemoveAt(0);
+            }
             yield return new WaitForSeconds(2.5f);
         }
-
     }
     private IEnumerator BringDaMoney(Collider playerCollider)
     {
-            var oldMoneyObjPosition = _moneyObj.transform.position;
-            _moneyObj.SetActive(true);
-            Sequence sequence = DOTween.Sequence();
-        var duration = 1;
-        sequence.Append(_moneyObj.transform.DOMove(playerCollider.transform.position, duration).SetEase(Ease.Linear));
-            Debug.Log(playerCollider.transform.position.ToString());
-            yield return new WaitForSeconds(duration);
-            Debug.Log("подождал");
-            _moneyObj.gameObject.SetActive(false);
-            _wallet.CoinsAmount += _finalCost;
-            _finalCost = 0; 
-            _moneyObj.transform.position = oldMoneyObjPosition;
-        
+        playerCollider.gameObject.TryGetComponent(out PlayerHotkeys player);
+        var oldMoneyObjPosition = _moneyObj[0].transform.position;
+        _moneyObj[0].transform.parent.gameObject.SetActive(true);
+        Sequence sequence = DOTween.Sequence();
+        foreach (var item in _moneyObj)
+        {
+            item.gameObject.SetActive(true);
+            sequence
+                .Append(item.DOMove(player.transform.position, 0.2f).SetEase(Ease.Linear));
+            yield return new WaitForSeconds(0.2f);
+            item.gameObject.SetActive(false);
+            item.transform.position = oldMoneyObjPosition;
+        }
+        _moneyObj[0].transform.parent.gameObject.SetActive(false);
+        _wallet.CoinsAmount += _finalCost;
+        foreach (var item in _moneyStages)
+            item.gameObject.SetActive(false);
+        _finalCost = 0;
     }
 
 }

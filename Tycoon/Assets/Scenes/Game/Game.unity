@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.31400877, g: 0.3748084, b: 0.38769507, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14959,7 +14958,7 @@ MonoBehaviour:
   _tilliage: {fileID: 805909407}
   _visualTemplate: {fileID: 1048600941}
   _isItHaveTilliage: 1
-  _growSpeed: 7
+  _growSpeed: 1
   _itemIcon: {fileID: 1328865020}
   _buyCircle: {fileID: 1515465634}
   _text: {fileID: 2131724447}
@@ -16631,7 +16630,7 @@ MonoBehaviour:
   _tilliage: {fileID: 1334280378}
   _visualTemplate: {fileID: 1643859824}
   _isItHaveTilliage: 1
-  _growSpeed: 7
+  _growSpeed: 1
   _itemIcon: {fileID: 1756538611}
   _buyCircle: {fileID: 457402225}
   _text: {fileID: 1379887091}
@@ -17244,7 +17243,7 @@ MonoBehaviour:
   _tilliage: {fileID: 2132516029}
   _visualTemplate: {fileID: 296080166}
   _isItHaveTilliage: 1
-  _growSpeed: 7
+  _growSpeed: 1
   _itemIcon: {fileID: 891430548}
   _buyCircle: {fileID: 385855110}
   _text: {fileID: 379880901}
@@ -54366,7 +54365,12 @@ MonoBehaviour:
   - {fileID: 119479431}
   - {fileID: 1373970104}
   - {fileID: 1874130659}
-  _moneyObj: {fileID: 1628405450}
+  _moneyObj:
+  - {fileID: 1628405451}
+  - {fileID: 1767463530}
+  - {fileID: 1456369449}
+  - {fileID: 1644937872}
+  - {fileID: 606445424}
 --- !u!65 &1547982299
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -54384,7 +54388,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 0.7}
   m_Center: {x: -2.25, y: 0, z: -0.095}
@@ -57513,11 +57517,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0007214787, y: 0.010193285, z: -0.000000048661605}
     m_Extent: {x: 0.001753427, y: 0.00087751914, z: 0.0014864486}
   m_DirtyAABB: 0
---- !u!1 &1628405450 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6790172020087575277, guid: 046595c21640fcd48b22543b62257293, type: 3}
-  m_PrefabInstance: {fileID: 2011865970}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1628405451 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 752884792394865043, guid: 046595c21640fcd48b22543b62257293, type: 3}
@@ -71222,6 +71221,10 @@ PrefabInstance:
     - target: {fileID: 6790172020087575277, guid: 046595c21640fcd48b22543b62257293, type: 3}
       propertyPath: m_Name
       value: 5USD
+      objectReference: {fileID: 0}
+    - target: {fileID: 6790172020087575277, guid: 046595c21640fcd48b22543b62257293, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

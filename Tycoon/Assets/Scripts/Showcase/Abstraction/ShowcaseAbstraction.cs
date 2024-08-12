@@ -132,10 +132,8 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
     private void GiveItems2Buyer(Backpack backpackAbstraction)
     {
-        Debug.Log(backpackAbstraction.IsBackpackNotFull());
         if (backpackAbstraction.IsBackpackNotFull() != false)
         {
-
             var itemCopyOfGameObject = Instantiate(_item, gameObject.transform);
             var backpackBuyer = backpackAbstraction as BackpackBuyer;
             backpackBuyer.SaveItem(itemCopyOfGameObject);
@@ -163,7 +161,6 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         {
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
-            Debug.Log("ShowcaseReMovingForwardInQueue");
             _queueHandler.MoveBuyersInQueue(_item.ItemName);
             //buyerStateMachine.MovingForwardInQueue();
         }
@@ -172,7 +169,6 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
             buyerStateMachine.Agent.SetDestination(buyerStateMachine.GetWannaBuyObjPosition(backpackBuyer.WannaBuy[0]));
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
-            Debug.Log("ShowcaseReMovingForwardInQueue");
             //buyerStateMachine.MovingForwardInQueue();
             buyerStateMachine.Subscribe2NewItem(_item.ItemName);
             _queueHandler.MoveBuyersInQueue(_item.ItemName);
