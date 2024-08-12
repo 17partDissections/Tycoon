@@ -1,13 +1,14 @@
 ﻿using System;
+using Tycoon.PlayerSystems;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Borodar.FarlandSkies.CloudyCrownPro
 {
     public class TimeText : MonoBehaviour
     {
         private Text _text;
-
         protected void Awake()
         {
             _text = GetComponent<Text>();

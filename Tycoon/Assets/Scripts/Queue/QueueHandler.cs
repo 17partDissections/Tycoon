@@ -3,37 +3,35 @@ using UnityEngine;
 
 public class QueueHandler
 {
-    public Dictionary<ItemName, List<BuyerStateMachine>> ByerQueueDictionary = new Dictionary<ItemName, List<BuyerStateMachine>>();
+    public Dictionary<ItemName, List<BuyerStateMachine>> BuyerQueueDictionary = new Dictionary<ItemName, List<BuyerStateMachine>>();
 
 
-    public void MooveByersInQueue(ItemName itemName)
+    public void MoveBuyersInQueue(ItemName itemName)
     {
-        foreach (var byer in ByerQueueDictionary[itemName])
-            MovingForwardInQueue(byer);
+        foreach (var buyer in BuyerQueueDictionary[itemName])
+            MovingForwardInQueue(buyer);
     }
 
-    public void AddByerToQueue(BuyerStateMachine buyerStateMachine, ItemName itemName, IShowcase showcase)
+    public void AddBuyerToQueue(BuyerStateMachine buyerStateMachine, ItemName itemName, IShowcase showcase)
     {
-        if (!ByerQueueDictionary.ContainsKey(itemName))
+        if (!BuyerQueueDictionary.ContainsKey(itemName))
         {
-            ByerQueueDictionary.Add(itemName, new List<BuyerStateMachine>() { buyerStateMachine });
+            BuyerQueueDictionary.Add(itemName, new List<BuyerStateMachine>() { buyerStateMachine });
             buyerStateMachine.NumerationOfBuyerInQueue = showcase.PplInQueueAmount;
             showcase.PplInQueueAmount++;
         }
         else
         {
-            ByerQueueDictionary[itemName].Add(buyerStateMachine);
+            BuyerQueueDictionary[itemName].Add(buyerStateMachine);
             buyerStateMachine.NumerationOfBuyerInQueue = showcase.PplInQueueAmount;
             showcase.PplInQueueAmount++;
         }
-
-
     }
-    public void RemoveByerFromQueue(BuyerStateMachine buyerStateMachine, ItemName itemName, IShowcase showcase)
+    public void RemoveBuyerFromQueue(BuyerStateMachine buyerStateMachine, ItemName itemName, IShowcase showcase)
     {
-        if (ByerQueueDictionary.ContainsKey(itemName))
+        if (BuyerQueueDictionary.ContainsKey(itemName))
         {
-            ByerQueueDictionary[itemName].Remove(buyerStateMachine);
+            BuyerQueueDictionary[itemName].Remove(buyerStateMachine);
             showcase.PplInQueueAmount--;
             buyerStateMachine.NumerationOfBuyerInQueue = 0;
 

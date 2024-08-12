@@ -8,7 +8,7 @@ using Zenject;
 public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerStates>
 {
     public ObjectPool<BuyerStateMachine> ObjectPool;
-    public Animator Animator;
+    //public Animator Animator;
     public Vector3 WayPoint;
     public NavMeshAgent Agent;
     public BackpackBuyer BackpackBuyer;

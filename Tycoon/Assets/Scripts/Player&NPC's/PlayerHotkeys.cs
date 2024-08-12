@@ -1,15 +1,23 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Tycoon.PlayerSystems
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerHotkeys : MonoBehaviour
     {
         private Animator _animator;
         private StandardMap _standardMap;
         private Rigidbody _rigidbody;
         [SerializeField] private Transform _rotation;
         private int _isMoving = Animator.StringToHash("moving");
+
+        [SerializeField] GameObject _hotkeysInfoDisabled;
+        [SerializeField] GameObject _hotkeysInfoEnabled;
+
+        public Action TkeyPressed;
+        private bool _isPlayerHotkeysWindowEnabled;
+
         void Start()
         {
             _animator = GetComponent<Animator>();
@@ -43,6 +51,23 @@ namespace Tycoon.PlayerSystems
             }
             else
                 gameObject.GetComponent<Animator>().SetBool(Animator.StringToHash("moving"), false);
+            if (Input.GetKeyDown(KeyCode.T))
+                TkeyPressed.Invoke();
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                if (_isPlayerHotkeysWindowEnabled)
+                {
+                    _hotkeysInfoDisabled.SetActive(true);
+                    _hotkeysInfoEnabled.SetActive(false);
+                    _isPlayerHotkeysWindowEnabled = false;
+                }
+                else
+                {
+                    _hotkeysInfoDisabled.SetActive(false);
+                    _hotkeysInfoEnabled.SetActive(true);
+                    _isPlayerHotkeysWindowEnabled = true;
+                }
+            }
         }
     }
 }

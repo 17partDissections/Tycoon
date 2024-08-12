@@ -2,11 +2,15 @@ using Zenject;
 using UnityEngine;
 using System.Collections.Generic;
 using Tycoon.Factories;
+using System;
+using Tycoon.PlayerSystems;
 
 public class MainSceneInstaller : MonoInstaller, IInitializable
 {
     [SerializeField] private Wallet _walletInstance;
     [SerializeField] private List<BuyerStateMachine> _buyers;
+    [SerializeField] private PlayerHotkeys _player;
+    [SerializeField] private AudioSources _audioSources;
 
     public void Initialize()
     {
@@ -15,7 +19,8 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     }
     public override void InstallBindings()
     {
-        BindMainInstllaersIntarface();
+        BindMainInstallersInterface();
+        BindPlayerHotkeys();
         BindBuyersObjectPool();
         BindBuyersFactory();
         BindListOfBuyers();
@@ -23,6 +28,25 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindStorage();
         BindWallet();
         BindQueueHandler();
+        BindAudioSources();
+    }
+
+    private void BindAudioSources()
+    {
+        Container
+            .Bind<AudioSources>()
+            .FromInstance(_audioSources)
+            .AsSingle()
+            .NonLazy();
+    }
+
+    private void BindPlayerHotkeys()
+    {
+        Container
+            .Bind<PlayerHotkeys>()
+            .FromInstance(_player)
+            .AsSingle()
+            .NonLazy();
     }
 
     private void BindQueueHandler()
@@ -34,7 +58,7 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
             .NonLazy();
     }
 
-    private void BindMainInstllaersIntarface()
+    private void BindMainInstallersInterface()
     {
         Container.BindInterfacesTo<MainSceneInstaller>()
             .FromInstance(this)

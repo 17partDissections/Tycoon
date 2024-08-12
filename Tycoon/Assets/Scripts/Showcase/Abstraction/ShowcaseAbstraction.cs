@@ -20,6 +20,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
     private Storage _storage;
     private Wallet _playerWallet;
     private QueueHandler _queueHandler;
+    private AudioSources _audioSources;
     private Backpack _backpackAbstraction;
     private bool _buyed = false;
     private FabricsNShowcasesCanvas _canvas;
@@ -45,12 +46,13 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
     }
     [Inject]
-    private void Construct(EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler)
+    private void Construct(EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioSources audioSources)
     {
         _eventbus = bus;
         _storage = storage;
         _playerWallet = wallet;
         _queueHandler = queueHandler;
+        _audioSources = audioSources;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -71,7 +73,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             }
 
         }
-        else if (other.GetComponent<PlayerMovement>() != null)
+        else if (other.GetComponent<PlayerHotkeys>() != null)
         {
             BuyShowcase();
         }
@@ -106,6 +108,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         if (_playerWallet.Trying2BuySmthng(ShowcasePrice) == true)
         {
             _buyed = true;
+            _audioSources.PlaySound(_audioSources.Coin);
             _canvas.OnlyIcon();
             _eventbus.StageSignal.Invoke(2);
         }
@@ -161,7 +164,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
             Debug.Log("ShowcaseReMovingForwardInQueue");
-            _queueHandler.MooveByersInQueue(_item.ItemName);
+            _queueHandler.MoveBuyersInQueue(_item.ItemName);
             //buyerStateMachine.MovingForwardInQueue();
         }
         else
@@ -172,7 +175,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             Debug.Log("ShowcaseReMovingForwardInQueue");
             //buyerStateMachine.MovingForwardInQueue();
             buyerStateMachine.Subscribe2NewItem(_item.ItemName);
-            _queueHandler.MooveByersInQueue(_item.ItemName);
+            _queueHandler.MoveBuyersInQueue(_item.ItemName);
 
         }
         BuyerHasGoneSignal?.Invoke();
