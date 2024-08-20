@@ -6,11 +6,11 @@ namespace Tycoon.PlayerSystems
 {
     public class PlayerHotkeys : MonoBehaviour
     {
-        private Animator _animator;
+        [SerializeField] private Animator _animator;
         private StandardMap _standardMap;
         private Rigidbody _rigidbody;
         [SerializeField] private Transform _rotation;
-        private int _isMoving = Animator.StringToHash("moving");
+        private int _isMoving = Animator.StringToHash("isMoving");
 
         [SerializeField] GameObject _hotkeysInfoDisabled;
         [SerializeField] GameObject _hotkeysInfoEnabled;
@@ -20,7 +20,6 @@ namespace Tycoon.PlayerSystems
 
         void Start()
         {
-            _animator = GetComponent<Animator>();
             _rigidbody = GetComponent<Rigidbody>();
             
 
@@ -49,8 +48,7 @@ namespace Tycoon.PlayerSystems
                 _rotation.rotation = Quaternion.LookRotation(_rigidbody.velocity);
 
             }
-            else
-                gameObject.GetComponent<Animator>().SetBool(Animator.StringToHash("moving"), false);
+            
             if (Input.GetKeyDown(KeyCode.T))
                 TkeyPressed.Invoke();
             if (Input.GetKeyDown(KeyCode.H))

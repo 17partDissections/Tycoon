@@ -20,7 +20,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
     private Storage _storage;
     private Wallet _playerWallet;
     private QueueHandler _queueHandler;
-    private AudioSources _audioSources;
+    private AudioHandler _audioHandler;
     private Backpack _backpackAbstraction;
     private bool _buyed = false;
     private FabricsNShowcasesCanvas _canvas;
@@ -29,6 +29,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
     public Transform _startOfQueuePosition;
     private Vector3 _lastPositionInQueue;
     [SerializeField] private DirectionOfQueue _directionOfQueue;
+    [SerializeField] private AudioClip _purchase;
 
     public int PplInQueueAmount { get; set; }
     public Transform FirstPointOfQueue { get => _startOfQueuePosition; set => _startOfQueuePosition = value; }
@@ -46,13 +47,13 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
     }
     [Inject]
-    private void Construct(EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioSources audioSources)
+    private void Construct(EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
     {
         _eventbus = bus;
         _storage = storage;
         _playerWallet = wallet;
         _queueHandler = queueHandler;
-        _audioSources = audioSources;
+        _audioHandler = audioSources;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -108,7 +109,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         if (_playerWallet.Trying2BuySmthng(ShowcasePrice) == true)
         {
             _buyed = true;
-            _audioSources.PlaySound(_audioSources.Coin);
+            _audioHandler.PlaySFX(_purchase);
             _canvas.OnlyIcon();
             _eventbus.StageSignal.Invoke(2);
         }

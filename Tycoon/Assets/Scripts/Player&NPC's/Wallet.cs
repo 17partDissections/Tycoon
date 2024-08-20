@@ -19,7 +19,7 @@ public class Wallet : MonoBehaviour
             _addMoneySignal?.Invoke();
         }
     }
-    [Range(0, 160)] [SerializeField] private int _startCoinsAmount;
+    [Range(0, 360)] [SerializeField] private int _startCoinsAmount;
     private TextMeshProUGUI _visualCoins;
     private Action _addMoneySignal;
 

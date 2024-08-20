@@ -28,7 +28,9 @@ public abstract class FabricAbstraction : MonoBehaviour
     private EventBus _eventbus;
     [SerializeField] private int _stage;
     private Wallet _playerWallet;
-    private AudioSources _audioSources;
+    private AudioHandler _audioHandler;
+    [SerializeField] private AudioClip _purchase;
+    [SerializeField] private AudioClip _plantRemoving;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -39,7 +41,7 @@ public abstract class FabricAbstraction : MonoBehaviour
                 other.TryGetComponent<Backpack>(out Backpack backpack);
                 if (backpack is BackpackWorker && backpack.IsBackpackNotFull())
                 {
-                    _audioSources.PlaySound(_audioSources.PlantRemoving);
+                    _audioHandler.PlaySFX(_plantRemoving);
                     backpack?.SaveItem(_itemCopy);
                     _canGrab = false;
                     _canvas.Text.text = "";
@@ -61,11 +63,11 @@ public abstract class FabricAbstraction : MonoBehaviour
     }
 
     [Inject]
-    private void Construct(EventBus bus, Wallet wallet, AudioSources audioSources)
+    private void Construct(EventBus bus, Wallet wallet, AudioHandler audioSources)
     {
         _eventbus = bus;
         _playerWallet = wallet;
-        _audioSources = audioSources;
+        _audioHandler = audioSources;
     }
     private IEnumerator GrowCoroutine()
     {
@@ -105,7 +107,7 @@ public abstract class FabricAbstraction : MonoBehaviour
         if (_playerWallet.Trying2BuySmthng(FabricPrice) == true)
         {
             _buyed = true;
-            _audioSources.PlaySound(_audioSources.Coin);
+            _audioHandler.PlaySFX(_purchase);
             _canvas.OnlyIcon();
             gameObject.SetActive(true);
             if(_isItHaveTilliage)

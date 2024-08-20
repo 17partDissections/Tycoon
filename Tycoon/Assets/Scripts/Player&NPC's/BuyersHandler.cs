@@ -10,16 +10,21 @@ public class BuyersHandler : MonoBehaviour
     private WaitForSeconds _delay = new WaitForSeconds(2);
     public int _buyerClonesOnScene;
     public int MaxAmountOfBuyerClones;
+    [SerializeField] private int _stage;
     
     [Inject] private void Construct(ObjectPool<BuyerStateMachine> objectPool, EventBus eventBus)
     {
         _objectPool = objectPool;
         eventBus.BuyerGoAwaySignal += () => _buyerClonesOnScene--;
+        eventBus.StageSignal += Check4Stage;
     }
 
-    void Start()
+    private void Check4Stage(int stage)
     {
-        StartCoroutine(AddBuyerCoroutine());
+        if(stage == _stage) 
+        {
+            StartCoroutine(AddBuyerCoroutine());
+        }
     }
 
     private IEnumerator AddBuyerCoroutine()

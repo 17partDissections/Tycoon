@@ -11,6 +11,7 @@ public class Cashier : MonoBehaviour, IShowcase
     private Wallet _wallet;
     private QueueHandler _queueHandler;
     private int _finalCost;
+    private bool _isPlayerOnDaDesk;
     private bool _isWorkerOnDaDesk;
     private List<BackpackBuyer> _waitingBuyers = new List<BackpackBuyer>();
     [SerializeField] private Transform _startOfQueuePosition;
@@ -20,7 +21,8 @@ public class Cashier : MonoBehaviour, IShowcase
     [SerializeField] private List<Transform> _moneyObj;
     private Coroutine _cashCoroutine;
     private Coroutine _cashierWorkCoroutine;
-    private AudioSources _audioSources;
+    private AudioHandler _audioHandler;
+    [SerializeField] private AudioClip _purchase;
 
 
 
@@ -31,13 +33,13 @@ public class Cashier : MonoBehaviour, IShowcase
     public event Action BuyerHasGoneSignal;
 
     [Inject]
-    private void Construct(Storage storage, Wallet wallet, QueueHandler queueHandler, AudioSources audioSources)
+    private void Construct(Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
     {
         _lastPositionInQueue = _startOfQueuePosition.position;
         storage.AddCashierPosition(gameObject.transform);
         _wallet = wallet;
         _queueHandler = queueHandler;
-        _audioSources = audioSources;
+        _audioHandler = audioSources;
         storage.AddItem2Aviable(ItemName.Cashier, _lastPositionInQueue);
         storage.AddQueueDirection(ItemName.Cashier, _directionOfQueue);
         storage.AddShowcaseOrCashier(ItemName.Cashier, this);
@@ -48,16 +50,29 @@ public class Cashier : MonoBehaviour, IShowcase
     {
         if (other.GetComponent<PlayerHotkeys>() != null)
         {
-            _isWorkerOnDaDesk = true;
-            _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
+            _isPlayerOnDaDesk = true;
+            if (!_isWorkerOnDaDesk)
+                _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
             if (_finalCost > 0)
                 StartCoroutine(BringDaMoney(other));
+        }
+        else if (other.TryGetComponent<WorkerStateMachine>(out WorkerStateMachine workerStateMachine))
+        {
+            if (workerStateMachine.WorkerWork == Works.CashierWorker)
+            {
+                _isWorkerOnDaDesk = true;
+                if (_cashierWorkCoroutine != null)
+                {
+                    StopCoroutine(_cashierWorkCoroutine);
+                    _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
+                } 
+            }
+
         }
         if (other.TryGetComponent<Backpack>(out Backpack backpack))
             if (backpack is BackpackBuyer && !backpack.IsBackpackNotFull())
             {
-                Debug.Log(_isWorkerOnDaDesk);
-                if (_isWorkerOnDaDesk)
+                if (_isWorkerOnDaDesk || _isPlayerOnDaDesk)
                     SellItem(backpack);
                 else
                     _waitingBuyers.Add(backpack as BackpackBuyer);
@@ -66,10 +81,20 @@ public class Cashier : MonoBehaviour, IShowcase
     private void OnTriggerExit(Collider other)
     {
         if (other.TryGetComponent<Backpack>(out Backpack backpack))
-            if (backpack is BackpackWorker)
+            if (other.GetComponent<PlayerHotkeys>() != null)
             {
+                _isPlayerOnDaDesk = false;
+                if (!_isWorkerOnDaDesk)
+                StopCoroutine(_cashierWorkCoroutine);
+            }
+            else if (other.TryGetComponent<WorkerStateMachine>(out WorkerStateMachine workerStateMachine))
+            {
+                if(workerStateMachine.WorkerWork == Works.CashierWorker)
+                {
                 _isWorkerOnDaDesk = false;
                 StopCoroutine(_cashierWorkCoroutine);
+                }
+
             }
     }
     private void SellItem(Backpack backpack)
@@ -95,7 +120,7 @@ public class Cashier : MonoBehaviour, IShowcase
                 break;
         }
         backpack.DestroyAllItems();
-        _audioSources.PlaySound(_audioSources.Purchase);
+        _audioHandler.PlaySFX(_purchase);
         backpack.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
         _queueHandler.MoveBuyersInQueue(ItemName.Cashier);
         buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.RunAwayState);

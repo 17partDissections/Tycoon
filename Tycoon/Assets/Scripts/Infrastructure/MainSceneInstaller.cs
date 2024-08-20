@@ -10,7 +10,7 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     [SerializeField] private Wallet _walletInstance;
     [SerializeField] private List<BuyerStateMachine> _buyers;
     [SerializeField] private PlayerHotkeys _player;
-    [SerializeField] private AudioSources _audioSources;
+    [SerializeField] private AudioHandler _audioHandler;
 
     public void Initialize()
     {
@@ -28,14 +28,14 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindStorage();
         BindWallet();
         BindQueueHandler();
-        BindAudioSources();
+        BindAudioHandler();
     }
 
-    private void BindAudioSources()
+    private void BindAudioHandler()
     {
         Container
-            .Bind<AudioSources>()
-            .FromInstance(_audioSources)
+            .Bind<AudioHandler>()
+            .FromInstance(_audioHandler)
             .AsSingle()
             .NonLazy();
     }
