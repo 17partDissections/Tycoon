@@ -39,7 +39,7 @@ public abstract class FabricAbstraction : MonoBehaviour
             if (_canGrab)
             {
                 other.TryGetComponent<Backpack>(out Backpack backpack);
-                if (backpack is BackpackWorker && backpack.IsBackpackNotFull())
+                if (backpack is BackpackWorker && !backpack.IsBackpackFull())
                 {
                     _audioHandler.PlaySFX(_plantRemoving);
                     backpack?.SaveItem(_itemCopy);

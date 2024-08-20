@@ -133,19 +133,19 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
     private void GiveItems2Buyer(Backpack backpackAbstraction)
     {
-        if (backpackAbstraction.IsBackpackNotFull() != false)
+        var backpackBuyer = backpackAbstraction as BackpackBuyer;
+        if (backpackAbstraction.IsBackpackFull() == false && backpackBuyer.RepeatingItems.Count() > 0)
         {
             var itemCopyOfGameObject = Instantiate(_item, gameObject.transform);
-            var backpackBuyer = backpackAbstraction as BackpackBuyer;
             backpackBuyer.SaveItem(itemCopyOfGameObject);
             _enabledItems4Buyers--;
             backpackBuyer.RepeatingItems.RemoveAt(0);
-            //GiveItems2Buyer(backpackAbstraction, backpackBuyer.RepeatingItems);
             var ActiveItems = _showcaseInventory.FindAll(x => x.isActiveAndEnabled);
             ActiveItems[0].gameObject.SetActive(false);
             backpackBuyer.WannaBuy.Remove(_item.ItemName);
-            if (backpackAbstraction.IsBackpackNotFull() == false)
+            if (backpackAbstraction.IsBackpackFull() == true || backpackBuyer.RepeatingItems.Count() == 0)
                 RemovingFromBuyerEnteredTrigger(backpackAbstraction as BackpackBuyer);
+
         }
         else
         {
@@ -160,6 +160,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         BuyerEnteredTrigger.Remove(backpackBuyer);
         if (backpackBuyer.WannaBuy.Count == 0)
         {
+            Debug.Log(backpackBuyer.WannaBuy.Count);
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
             _queueHandler.MoveBuyersInQueue(_item.ItemName);
@@ -167,11 +168,8 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         }
         else
         {
-
             buyerStateMachine.Agent.SetDestination(buyerStateMachine.GetWannaBuyObjPosition(backpackBuyer.WannaBuy[0]));
-            //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
-            //buyerStateMachine.MovingForwardInQueue();
-            buyerStateMachine.Subscribe2NewItem(_item.ItemName);
+            buyerStateMachine.Subscribe2NewItem(backpackBuyer.WannaBuy[0]);
             _queueHandler.MoveBuyersInQueue(_item.ItemName);
 
         }

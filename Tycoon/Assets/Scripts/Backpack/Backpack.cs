@@ -75,9 +75,9 @@ public abstract class Backpack : MonoBehaviour
     {
         return _items;
     }
-    public bool IsBackpackNotFull()
+    public bool IsBackpackFull()
     {
-        if(_items.Count != _maxBackpackCapacity)
+        if(_items.Count == _maxBackpackCapacity)
         {
             return true;
         }

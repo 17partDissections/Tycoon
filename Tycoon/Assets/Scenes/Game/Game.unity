@@ -12404,7 +12404,7 @@ GameObject:
   - component: {fileID: 308689822}
   - component: {fileID: 308689825}
   - component: {fileID: 308689824}
-  - component: {fileID: 308689823}
+  - component: {fileID: 308689826}
   m_Layer: 0
   m_Name: strawberry_left
   m_TagString: Untagged
@@ -12427,19 +12427,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1223547890}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &308689823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 308689821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &308689824
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -12490,6 +12477,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 308689821}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &308689826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308689821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &308750883
 GameObject:
   m_ObjectHideFlags: 0
@@ -17634,7 +17634,7 @@ GameObject:
   - component: {fileID: 394898196}
   - component: {fileID: 394898199}
   - component: {fileID: 394898198}
-  - component: {fileID: 394898197}
+  - component: {fileID: 394898200}
   m_Layer: 0
   m_Name: strawberry_left
   m_TagString: Untagged
@@ -17657,19 +17657,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1566157465}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &394898197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 394898195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &394898198
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17720,6 +17707,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 394898195}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &394898200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394898195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &402486179
 GameObject:
   m_ObjectHideFlags: 0
@@ -35705,7 +35705,7 @@ GameObject:
   - component: {fileID: 801523112}
   - component: {fileID: 801523115}
   - component: {fileID: 801523114}
-  - component: {fileID: 801523113}
+  - component: {fileID: 801523116}
   m_Layer: 0
   m_Name: strawberry_left
   m_TagString: Untagged
@@ -35728,19 +35728,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 659077643}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &801523113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 801523111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &801523114
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -35791,6 +35778,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801523111}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &801523116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801523111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &802082659
 GameObject:
   m_ObjectHideFlags: 0
@@ -37764,7 +37764,7 @@ GameObject:
   - component: {fileID: 850217389}
   - component: {fileID: 850217392}
   - component: {fileID: 850217391}
-  - component: {fileID: 850217390}
+  - component: {fileID: 850217393}
   m_Layer: 0
   m_Name: strawberry_right
   m_TagString: Untagged
@@ -37787,19 +37787,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 637903864}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &850217390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850217388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &850217391
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -37850,6 +37837,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850217388}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &850217393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850217388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &850525274
 GameObject:
   m_ObjectHideFlags: 0
@@ -44834,7 +44834,7 @@ GameObject:
   - component: {fileID: 1006494265}
   - component: {fileID: 1006494268}
   - component: {fileID: 1006494267}
-  - component: {fileID: 1006494266}
+  - component: {fileID: 1006494269}
   m_Layer: 0
   m_Name: strawberry_right
   m_TagString: Untagged
@@ -44857,19 +44857,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1347891527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1006494266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1006494264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1006494267
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -44920,6 +44907,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1006494264}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1006494269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006494264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1007333349
 GameObject:
   m_ObjectHideFlags: 0
@@ -54188,7 +54188,7 @@ GameObject:
   - component: {fileID: 1261254808}
   - component: {fileID: 1261254811}
   - component: {fileID: 1261254810}
-  - component: {fileID: 1261254809}
+  - component: {fileID: 1261254812}
   m_Layer: 0
   m_Name: strawberry_left
   m_TagString: Untagged
@@ -54211,19 +54211,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1756649661}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1261254809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261254807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1261254810
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -54274,6 +54261,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1261254807}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1261254812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261254807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1262555533
 GameObject:
   m_ObjectHideFlags: 0
@@ -56426,7 +56426,7 @@ GameObject:
   - component: {fileID: 1302441513}
   - component: {fileID: 1302441516}
   - component: {fileID: 1302441515}
-  - component: {fileID: 1302441514}
+  - component: {fileID: 1302441517}
   m_Layer: 0
   m_Name: strawberry_left
   m_TagString: Untagged
@@ -56449,19 +56449,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1347891527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1302441514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1302441512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1302441515
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -56512,6 +56499,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1302441512}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1302441517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302441512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1304520116
 GameObject:
   m_ObjectHideFlags: 0
@@ -56898,7 +56898,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowcasePrice: 60
-  _showcaseInventory: []
+  _showcaseInventory:
+  - {fileID: 1261254812}
+  - {fileID: 1483781411}
+  - {fileID: 308689826}
+  - {fileID: 1455988964}
+  - {fileID: 394898200}
+  - {fileID: 1328638837}
+  - {fileID: 1721074152}
+  - {fileID: 850217393}
+  - {fileID: 1302441517}
+  - {fileID: 1006494269}
+  - {fileID: 801523116}
+  - {fileID: 1721897235}
   BuyerEnteredTrigger: []
   _itemIcon: {fileID: 321233033}
   _text: {fileID: 1319121930}
@@ -58151,7 +58163,7 @@ GameObject:
   - component: {fileID: 1328638833}
   - component: {fileID: 1328638836}
   - component: {fileID: 1328638835}
-  - component: {fileID: 1328638834}
+  - component: {fileID: 1328638837}
   m_Layer: 0
   m_Name: strawberry_right
   m_TagString: Untagged
@@ -58174,19 +58186,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1566157465}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1328638834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328638832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1328638835
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -58237,6 +58236,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328638832}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1328638837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328638832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1328865018
 GameObject:
   m_ObjectHideFlags: 0
@@ -63327,7 +63339,7 @@ GameObject:
   - component: {fileID: 1455988960}
   - component: {fileID: 1455988963}
   - component: {fileID: 1455988962}
-  - component: {fileID: 1455988961}
+  - component: {fileID: 1455988964}
   m_Layer: 0
   m_Name: strawberry_right
   m_TagString: Untagged
@@ -63350,19 +63362,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1223547890}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1455988961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1455988959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1455988962
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -63413,6 +63412,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1455988959}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1455988964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455988959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!4 &1456369449 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 752884792394865043, guid: 046595c21640fcd48b22543b62257293, type: 3}
@@ -64726,7 +64738,7 @@ GameObject:
   - component: {fileID: 1483781407}
   - component: {fileID: 1483781410}
   - component: {fileID: 1483781409}
-  - component: {fileID: 1483781408}
+  - component: {fileID: 1483781411}
   m_Layer: 0
   m_Name: strawberry_right
   m_TagString: Untagged
@@ -64749,19 +64761,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1756649661}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1483781408
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483781406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1483781409
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64812,6 +64811,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1483781406}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1483781411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483781406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1485001609
 GameObject:
   m_ObjectHideFlags: 0
@@ -75686,7 +75698,7 @@ GameObject:
   - component: {fileID: 1721074148}
   - component: {fileID: 1721074151}
   - component: {fileID: 1721074150}
-  - component: {fileID: 1721074149}
+  - component: {fileID: 1721074152}
   m_Layer: 0
   m_Name: strawberry_left
   m_TagString: Untagged
@@ -75709,19 +75721,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 637903864}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1721074149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721074147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1721074150
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75772,6 +75771,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721074147}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1721074152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721074147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1721897230
 GameObject:
   m_ObjectHideFlags: 0
@@ -75783,7 +75795,7 @@ GameObject:
   - component: {fileID: 1721897231}
   - component: {fileID: 1721897234}
   - component: {fileID: 1721897233}
-  - component: {fileID: 1721897232}
+  - component: {fileID: 1721897235}
   m_Layer: 0
   m_Name: strawberry_right
   m_TagString: Untagged
@@ -75806,19 +75818,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 659077643}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1721897232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721897230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52e64d507aeba3e488233d65741a2ce9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemName: 0
 --- !u!23 &1721897233
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75869,6 +75868,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721897230}
   m_Mesh: {fileID: 4300004, guid: 3f4d2118f6a772542a1635ef5bfa6982, type: 3}
+--- !u!114 &1721897235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721897230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: 1
 --- !u!1 &1722108832
 GameObject:
   m_ObjectHideFlags: 0

@@ -70,7 +70,7 @@ public class Cashier : MonoBehaviour, IShowcase
 
         }
         if (other.TryGetComponent<Backpack>(out Backpack backpack))
-            if (backpack is BackpackBuyer && !backpack.IsBackpackNotFull())
+            if (backpack is BackpackBuyer && backpack.IsBackpackFull())
             {
                 if (_isWorkerOnDaDesk || _isPlayerOnDaDesk)
                     SellItem(backpack);

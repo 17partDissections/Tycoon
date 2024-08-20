@@ -15,7 +15,8 @@ public class AudioHandler : MonoBehaviour
     }
     public void PlayMusic(AudioClip audioClip)
     {
-        _music.PlayOneShot(audioClip);
+        _music.clip = audioClip;
+        _music.Play();   
     }
     public void OnMasterVolumeValueChanged(float percent)
     {

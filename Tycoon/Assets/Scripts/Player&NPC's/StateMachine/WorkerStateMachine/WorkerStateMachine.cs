@@ -25,5 +25,6 @@ public class WorkerStateMachine : StateMachineController<WorkerStateMachine.Work
 }
 public enum Works
 {
-    CashierWorker
+    CashierWorker,
+    PerenoschikWorker
 }
