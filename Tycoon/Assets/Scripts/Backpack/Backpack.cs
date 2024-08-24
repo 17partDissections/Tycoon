@@ -4,16 +4,16 @@ using UnityEngine;
 public abstract class Backpack : MonoBehaviour
 {
 
-    public List<Item> _items = new List<Item>();
+    public List<Item> Items = new List<Item>();
     [SerializeField] private int _maxBackpackCapacity;
     [SerializeField] private Transform _itemStartPosition;
 
 
     public void SaveItem(Item item)
     {
-        if (_items.Count < _maxBackpackCapacity)
+        if (Items.Count < _maxBackpackCapacity)
         {
-        _items.Add(item);
+        Items.Add(item);
             item.gameObject.SetActive(true);
             item.transform.rotation = Quaternion.identity;
             item.transform.rotation = Quaternion.Euler(-90, 0, 0);
@@ -28,16 +28,16 @@ public abstract class Backpack : MonoBehaviour
     private void SortItem()
     {
         float height = 0;
-        for (int i = 0; i < _items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
             if (i == 0)
             {
-                _items[i].gameObject.transform.position = _itemStartPosition.position + new Vector3(0, i, 0);
+                Items[i].gameObject.transform.position = _itemStartPosition.position + new Vector3(0, i, 0);
             height = i;
             }
             else
             {
-                _items[i].gameObject.transform.position = _itemStartPosition.position + new Vector3(0, height +0.5f, 0);
+                Items[i].gameObject.transform.position = _itemStartPosition.position + new Vector3(0, height +0.5f, 0);
                 height += 0.5f;
             }
 
@@ -48,12 +48,12 @@ public abstract class Backpack : MonoBehaviour
 
     public Item RemoveItem(ItemName itemType)
     {
-        foreach (var item in _items)
+        foreach (var item in Items)
         {
             if (item.ItemName == itemType)
             {
                 Destroy(item.gameObject);
-                _items.Remove(item);
+                Items.Remove(item);
                 SortItem();
                 return item;
             }
@@ -63,21 +63,21 @@ public abstract class Backpack : MonoBehaviour
     }
     public void DestroyAllItems()
     {
-        foreach (var item in _items)
+        foreach (var item in Items)
         {
             Destroy(item.gameObject);
 
         }
-        _items.Clear();
+        Items.Clear();
     }
 
     public List<Item> GiveItemsList()
     {
-        return _items;
+        return Items;
     }
     public bool IsBackpackFull()
     {
-        if(_items.Count == _maxBackpackCapacity)
+        if(Items.Count == _maxBackpackCapacity)
         {
             return true;
         }

@@ -23,7 +23,7 @@ public class Going2WorkState : BaseState<WorkerStateMachine.WorkerStates>
     {
         if (_stateMachine.Agent.remainingDistance < 0.5f)
         {
-            //ChangeStateAction(WorkerStateMachine.WorkerStates.);
+            ChangeStateAction(WorkerStateMachine.WorkerStates.WorkingState);
         }
     }
 }

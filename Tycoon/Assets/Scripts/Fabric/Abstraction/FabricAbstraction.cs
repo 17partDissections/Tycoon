@@ -15,9 +15,11 @@ public abstract class FabricAbstraction : MonoBehaviour
     [SerializeField] private bool _isItHaveTilliage = true;
     private Item _itemCopy;
     [SerializeField] private int _growSpeed;
+    public int GrowSpeed => _growSpeed;
     public Action<int> GrowSignal;
     private int _timer;
-    private bool _canGrab;
+    public int CurrentGrowSecond => _timer;
+    public bool CanGrab;
     private bool _isCoroutineStarted;
     private bool _buyed;
 
@@ -36,14 +38,14 @@ public abstract class FabricAbstraction : MonoBehaviour
     {
         if (_buyed)
         {
-            if (_canGrab)
+            if (CanGrab)
             {
                 other.TryGetComponent<Backpack>(out Backpack backpack);
                 if (backpack is BackpackWorker && !backpack.IsBackpackFull())
                 {
                     _audioHandler.PlaySFX(_plantRemoving);
                     backpack?.SaveItem(_itemCopy);
-                    _canGrab = false;
+                    CanGrab = false;
                     _canvas.Text.text = "";
                     GrowSignal.Invoke(_timer += 2); //disabling last phase visual object
                     _timer = 0;
@@ -60,6 +62,23 @@ public abstract class FabricAbstraction : MonoBehaviour
             BuyFabric();
         }
 
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (CanGrab)
+        {
+            other.TryGetComponent<Backpack>(out Backpack backpack);
+            if (backpack is BackpackWorker && !backpack.IsBackpackFull())
+            {
+                _audioHandler.PlaySFX(_plantRemoving);
+                backpack?.SaveItem(_itemCopy);
+                CanGrab = false;
+                _canvas.Text.text = "";
+                GrowSignal.Invoke(_timer += 2); //disabling last phase visual object
+                _timer = 0;
+                StartCoroutine(GrowCoroutine());
+            }
+        }
     }
 
     [Inject]
@@ -81,13 +100,12 @@ public abstract class FabricAbstraction : MonoBehaviour
         }
         _canvas.Text.text = "done";
         var itemCopyOfGameObject = Instantiate(_visualTemplate, gameObject.transform);
-        //itemCopyOfGameObject.SetActive(true);
         itemCopyOfGameObject.TryGetComponent(out Item itemCopy);
         if (itemCopy != null)
         {
             _itemCopy = itemCopy;
         }
-        _canGrab = true;
+        CanGrab = true;
     }
 
     private void Start()
