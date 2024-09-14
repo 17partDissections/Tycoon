@@ -3,6 +3,6 @@ public class Banana : Item
 {
     private void Start()
     {
-        _price = 8;
+        _price = 10;
     }
 }

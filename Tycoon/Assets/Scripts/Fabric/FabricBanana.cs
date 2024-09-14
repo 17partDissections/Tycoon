@@ -1,6 +1,5 @@
 
 public class FabricBanana : FabricAbstraction
 {
-
 }
 

@@ -38,24 +38,29 @@ public class WorkingState : BaseState<WorkerStateMachine.WorkerStates>
     }
     private IEnumerator CollectStuffFromFabrics()
     {
+        var backpackItemsAmount = 0;
         for (int index = 0; index < _stateMachine.WorkerStruct.Fabrics.Count; index++)
         {
-            Debug.Log(index);
+            backpackItemsAmount = _stateMachine.BackpackWorker.Items.Count;
+
             _stateMachine.Agent.SetDestination(_stateMachine.WorkerStruct.Fabrics[index].transform.position);
             yield return new WaitForSeconds(1f);
             yield return new WaitUntil(() => _stateMachine.Agent.remainingDistance < 0.1f);
-            if (_stateMachine.WorkerStruct.Fabrics[index].CurrentGrowSecond != _stateMachine.WorkerStruct.Fabrics[index].GrowSpeed)
-                yield return new WaitForSeconds(_stateMachine.WorkerStruct.Fabrics[index].GrowSpeed - _stateMachine.WorkerStruct.Fabrics[index].CurrentGrowSecond);
-            else
-                Debug.Log("qweqwerqwe");
-        }
-        if (_stateMachine.BackpackWorker.Items.Count > 0)
-        {
-            _stateMachine.StartCoroutine(GiveItems2Showcase());
-        }
-        else
-            _stateMachine.StartCoroutine(CollectStuffFromFabrics());
+            if (backpackItemsAmount == 0 && _stateMachine.BackpackWorker.Items.Count == 1)
+                continue;
+            if (_stateMachine.BackpackWorker.Items.Count > backpackItemsAmount)
+            {
+                continue;
+            }
+            
+            if (!_stateMachine.WorkerStruct.Fabrics[index].CanGrab)
+            {
+                yield return new WaitUntil(() => _stateMachine.BackpackWorker.Items.Count > backpackItemsAmount);
+            }
 
+
+        }
+        _stateMachine.StartCoroutine(GiveItems2Showcase());
     }
 
     private IEnumerator GiveItems2Showcase()

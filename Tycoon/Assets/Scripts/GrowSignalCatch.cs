@@ -12,7 +12,9 @@ public class GrowSignalCatch : MonoBehaviour
     [SerializeField] private bool gOSA_F;
     [SerializeField] private bool gOSA_T;
     [SerializeField] private bool isItShouldBeDeactivated;
+    [SerializeField] private int _deactivatingStage = 2;
 
+    
     private void Start()
     {
        _fabricAbstraction = GetComponentInParent<FabricAbstraction>();
@@ -29,8 +31,9 @@ public class GrowSignalCatch : MonoBehaviour
         }
         if (isItShouldBeDeactivated)
         {
-            if (stage - 2 == _growStage)
+            if (stage - _deactivatingStage == _growStage)
                 _seedStageObj.SetActive(false);
         }
+        
     }
 }

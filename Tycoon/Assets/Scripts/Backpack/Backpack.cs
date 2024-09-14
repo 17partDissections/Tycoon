@@ -8,7 +8,6 @@ public abstract class Backpack : MonoBehaviour
     [SerializeField] private int _maxBackpackCapacity;
     [SerializeField] private Transform _itemStartPosition;
 
-
     public void SaveItem(Item item)
     {
         if (Items.Count < _maxBackpackCapacity)

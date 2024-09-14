@@ -5,51 +5,62 @@ using System;
 using UnityEngine.UI;
 using Zenject;
 
-public abstract class FabricAbstraction : MonoBehaviour
+public abstract class FabricAbstraction : MonoBehaviour, IBuyable
 {
     public int FabricPrice;
 
-    [SerializeField] private Item _item;
+    [SerializeField] protected Item Item;
     [SerializeField] private GameObject _tilliage;
-    [SerializeField] private GameObject _visualTemplate;
+    [SerializeField] protected GameObject VisualTemplate;
     [SerializeField] private bool _isItHaveTilliage = true;
-    private Item _itemCopy;
+    protected Item ItemCopy;
     [SerializeField] private int _growSpeed;
-    public int GrowSpeed => _growSpeed;
+    protected int GrowSpeed => _growSpeed;
     public Action<int> GrowSignal;
-    private int _timer;
-    public int CurrentGrowSecond => _timer;
+    protected int Timer;
+    public int CurrentGrowSecond => Timer;
+    private bool _isPlayerInTrigger;
+
+
+
     public bool CanGrab;
     private bool _isCoroutineStarted;
-    private bool _buyed;
+    protected bool Buyed;
+    protected Coroutine HashCoroutine;
 
-    private FabricsNShowcasesCanvas _canvas;
+    protected FabricsNShowcasesCanvas Canvas;
     [SerializeField] private Image _itemIcon;
-    public Image _buyCircle;
+    [SerializeField] private Image _buyCircle;
     [SerializeField] private TextMeshProUGUI _text;
     private EventBus _eventbus;
     [SerializeField] private int _stage;
     private Wallet _playerWallet;
-    private AudioHandler _audioHandler;
+    protected AudioHandler AudioHandler;
     [SerializeField] private AudioClip _purchase;
-    [SerializeField] private AudioClip _plantRemoving;
+    [SerializeField] protected AudioClip PlantRemoving;
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
-        if (_buyed)
+        if (other.tag == "Player")
+            _isPlayerInTrigger = true;
+
+        if (Buyed)
         {
             if (CanGrab)
             {
                 other.TryGetComponent<Backpack>(out Backpack backpack);
                 if (backpack is BackpackWorker && !backpack.IsBackpackFull())
                 {
-                    _audioHandler.PlaySFX(_plantRemoving);
-                    backpack?.SaveItem(_itemCopy);
+                    AudioHandler.PlaySFX(PlantRemoving);
+                    backpack?.SaveItem(ItemCopy);
                     CanGrab = false;
-                    _canvas.Text.text = "";
-                    GrowSignal.Invoke(_timer += 2); //disabling last phase visual object
-                    _timer = 0;
-                    StartCoroutine(GrowCoroutine());
+                    Canvas.Text.text = "";
+                    GrowSignal.Invoke(Timer += 2); //disabling last phase visual object
+                    if (HashCoroutine == null)
+                    {
+                        HashCoroutine = StartCoroutine(GrowCoroutine());
+                    }
+
                 }
                 else
                 {
@@ -57,27 +68,39 @@ public abstract class FabricAbstraction : MonoBehaviour
                 }
             }
         }
+    }
+    protected virtual void OnTriggerStay(Collider other)
+    {
+        if (Buyed)
+        {
+            if (CanGrab)
+            {
+                other.TryGetComponent<Backpack>(out Backpack backpack);
+                if (backpack is BackpackWorker && !backpack.IsBackpackFull())
+                {
+                    AudioHandler.PlaySFX(PlantRemoving);
+                    backpack?.SaveItem(ItemCopy);
+                    CanGrab = false;
+                    Canvas.Text.text = "";
+                    GrowSignal.Invoke(Timer += 2); //disabling last phase visual object
+                    if (HashCoroutine == null)
+                        HashCoroutine = StartCoroutine(GrowCoroutine());
+                }
+            }
+        }
         else
         {
-            BuyFabric();
+            BuyingProcess();
         }
 
     }
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerExit(Collider other)
     {
-        if (CanGrab)
+        if (other.tag == "Player")
         {
-            other.TryGetComponent<Backpack>(out Backpack backpack);
-            if (backpack is BackpackWorker && !backpack.IsBackpackFull())
-            {
-                _audioHandler.PlaySFX(_plantRemoving);
-                backpack?.SaveItem(_itemCopy);
-                CanGrab = false;
-                _canvas.Text.text = "";
-                GrowSignal.Invoke(_timer += 2); //disabling last phase visual object
-                _timer = 0;
-                StartCoroutine(GrowCoroutine());
-            }
+                Canvas.BuyCircle.fillAmount = 0;
+                _isPlayerInTrigger = false;
+           
         }
     }
 
@@ -86,31 +109,34 @@ public abstract class FabricAbstraction : MonoBehaviour
     {
         _eventbus = bus;
         _playerWallet = wallet;
-        _audioHandler = audioSources;
+        AudioHandler = audioSources;
     }
-    private IEnumerator GrowCoroutine()
+    protected virtual IEnumerator GrowCoroutine()
     {
-        while (_timer < _growSpeed)
+        Timer = 0;
+        while (Timer < _growSpeed)
         {
             yield return new WaitForSeconds(1);
-            _timer++;
-            GrowSignal.Invoke(_timer);
-            _canvas.Text.text = (_timer + "/" + _growSpeed).ToString();
+            Timer++;
+            GrowSignal.Invoke(Timer);
+            Canvas.Text.text = (Timer + "/" + _growSpeed).ToString();
 
         }
-        _canvas.Text.text = "done";
-        var itemCopyOfGameObject = Instantiate(_visualTemplate, gameObject.transform);
+        Canvas.Text.text = "done";
+        var itemCopyOfGameObject = Instantiate(VisualTemplate, gameObject.transform);
         itemCopyOfGameObject.TryGetComponent(out Item itemCopy);
         if (itemCopy != null)
         {
-            _itemCopy = itemCopy;
+            ItemCopy = itemCopy;
         }
         CanGrab = true;
+        HashCoroutine = null;
     }
 
     private void Start()
     {
-        _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, FabricPrice);
+        Canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, FabricPrice, _buyCircle);
+
     }
     [ContextMenu("InitInspect")]
     public void InitInspector()
@@ -124,20 +150,34 @@ public abstract class FabricAbstraction : MonoBehaviour
     {
         if (_playerWallet.Trying2BuySmthng(FabricPrice) == true)
         {
-            _buyed = true;
-            _audioHandler.PlaySFX(_purchase);
-            _canvas.OnlyIcon();
+            Buyed = true;
+            AudioHandler.PlaySFX(_purchase);
+            Canvas.OnlyIcon();
             gameObject.SetActive(true);
-            if(_isItHaveTilliage)
+            if (_isItHaveTilliage)
                 _tilliage.SetActive(true);
             _eventbus.StageSignal.Invoke(_stage);
             if (_isCoroutineStarted == false)
             {
-                StartCoroutine(GrowCoroutine());
+                HashCoroutine = StartCoroutine(GrowCoroutine());
                 _isCoroutineStarted = true;
             }
 
         }
+
+    }
+
+    public void BuyingProcess()
+    {
+
+        if (Canvas.BuyCircle.fillAmount < 1)
+            Canvas.BuyCircle.fillAmount += Time.deltaTime;
+        else
+        {
+            Canvas.BuyCircle.fillAmount = 0;
+            BuyFabric();
+        }
+
 
     }
 }

@@ -8,28 +8,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T : Item
+public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcase where T : Item
 {
     public int ShowcasePrice;
 
-    [SerializeField] private List<T> _showcaseInventory;
-    [SerializeField] private List<BackpackBuyer> BuyerEnteredTrigger = new List<BackpackBuyer>();
-    private T _item;
-    private int _enabledItems4Buyers;
+    [SerializeField] protected List<T> ShowcaseInventory;
+    [SerializeField] protected List<BackpackBuyer> BuyerEnteredTrigger = new List<BackpackBuyer>();
+    protected T Item;
+    protected int EnabledItems4Buyers;
     private EventBus _eventbus;
     private Storage _storage;
     private Wallet _playerWallet;
     private QueueHandler _queueHandler;
     private AudioHandler _audioHandler;
-    private Backpack _backpackAbstraction;
+    protected Backpack BackpackAbstraction;
     private bool _buyed = false;
     private FabricsNShowcasesCanvas _canvas;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private Image _buyCircle;
     public Transform _startOfQueuePosition;
     private Vector3 _lastPositionInQueue;
     [SerializeField] private DirectionOfQueue _directionOfQueue;
     [SerializeField] private AudioClip _purchase;
+    public Image BuyCircle;
+    private bool _isPlayerInTrigger;
 
     public int PplInQueueAmount { get; set; }
     public Transform FirstPointOfQueue { get => _startOfQueuePosition; set => _startOfQueuePosition = value; }
@@ -39,11 +42,11 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
     private void Awake()
     {
         _lastPositionInQueue = _startOfQueuePosition.position;
-        _item = _showcaseInventory[0];
-        _storage.AddItem2Aviable(_item.ItemName, _lastPositionInQueue);
-        _storage.AddQueueDirection(_item.ItemName, _directionOfQueue);
-        _storage.AddShowcaseOrCashier(_item.ItemName, this);
-        _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, ShowcasePrice);
+        Item = ShowcaseInventory[0];
+        _storage.AddItem2Aviable(Item.ItemName, _lastPositionInQueue);
+        _storage.AddQueueDirection(Item.ItemName, _directionOfQueue);
+        _storage.AddShowcaseOrCashier(Item.ItemName, this);
+        _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, ShowcasePrice, _buyCircle);
 
     }
     [Inject]
@@ -57,11 +60,13 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player")
+            _isPlayerInTrigger = true;
         if (_buyed)
         {
             if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction))
             {
-                _backpackAbstraction = backpackAbstraction;
+                BackpackAbstraction = backpackAbstraction;
                 switch (backpackAbstraction.GetType().Name)
                 {
                     case nameof(BackpackWorker):
@@ -74,13 +79,24 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             }
 
         }
-        else if (other.GetComponent<PlayerHotkeys>() != null)
-        {
-            BuyShowcase();
-        }
         else if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction) && backpackAbstraction.GetType().Name == nameof(BackpackBuyer))
         {
             BackpackWasBuyer(backpackAbstraction);
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if(!_buyed)
+            if (other.tag == "Player")
+                BuyingProcess();
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            _canvas.BuyCircle.fillAmount = 0;
+            _isPlayerInTrigger = false;
+
         }
     }
     private void BackpackWasBuyer(Backpack backpackAbstraction)
@@ -88,7 +104,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
         if (backpackAbstraction.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine stateMachine))
         {
-            var sameObjects = stateMachine.WannaBuy.Where(x => x == _item.ItemName);
+            var sameObjects = stateMachine.WannaBuy.Where(x => x == Item.ItemName);
             List<ItemName> RepeatingItemsList = new List<ItemName>(sameObjects);
 
             var backpackBuyer = backpackAbstraction as BackpackBuyer;
@@ -117,7 +133,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
 
     private void GiveItems2Buyer(Backpack backpackAbstraction, List<ItemName> RepeatingItemsList)
     {
-        if (_enabledItems4Buyers > 0)
+        if (EnabledItems4Buyers > 0)
         {
             GiveItems2Buyer(backpackAbstraction);
             if (RepeatingItemsList.Count() == 0)
@@ -131,18 +147,18 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         }
     }
 
-    private void GiveItems2Buyer(Backpack backpackAbstraction)
+    protected void GiveItems2Buyer(Backpack backpackAbstraction)
     {
         var backpackBuyer = backpackAbstraction as BackpackBuyer;
         if (backpackAbstraction.IsBackpackFull() == false && backpackBuyer.RepeatingItems.Count() > 0)
         {
-            var itemCopyOfGameObject = Instantiate(_item, gameObject.transform);
+            var itemCopyOfGameObject = Instantiate(Item, gameObject.transform);
             backpackBuyer.SaveItem(itemCopyOfGameObject);
-            _enabledItems4Buyers--;
+            EnabledItems4Buyers--;
             backpackBuyer.RepeatingItems.RemoveAt(0);
-            var ActiveItems = _showcaseInventory.FindAll(x => x.isActiveAndEnabled);
+            var ActiveItems = ShowcaseInventory.FindAll(x => x.isActiveAndEnabled);
             ActiveItems[0].gameObject.SetActive(false);
-            backpackBuyer.WannaBuy.Remove(_item.ItemName);
+            backpackBuyer.WannaBuy.Remove(Item.ItemName);
             if (backpackAbstraction.IsBackpackFull() == true || backpackBuyer.RepeatingItems.Count() == 0)
                 RemovingFromBuyerEnteredTrigger(backpackAbstraction as BackpackBuyer);
 
@@ -151,7 +167,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
         {
             RemovingFromBuyerEnteredTrigger(backpackAbstraction as BackpackBuyer);
         }
-
+        
     }
 
     private void RemovingFromBuyerEnteredTrigger(BackpackBuyer backpackBuyer)
@@ -163,33 +179,33 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             Debug.Log(backpackBuyer.WannaBuy.Count);
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
-            _queueHandler.MoveBuyersInQueue(_item.ItemName);
+            _queueHandler.MoveBuyersInQueue(Item.ItemName);
             //buyerStateMachine.MovingForwardInQueue();
         }
         else
         {
             buyerStateMachine.Agent.SetDestination(buyerStateMachine.GetWannaBuyObjPosition(backpackBuyer.WannaBuy[0]));
             buyerStateMachine.Subscribe2NewItem(backpackBuyer.WannaBuy[0]);
-            _queueHandler.MoveBuyersInQueue(_item.ItemName);
+            _queueHandler.MoveBuyersInQueue(Item.ItemName);
 
         }
         BuyerHasGoneSignal?.Invoke();
     }
 
 
-    private void BackpackWasWorker()
+    protected virtual void BackpackWasWorker()
     {
-        var nonActiveItemsBeforeAdding = _showcaseInventory.FindAll(x => !x.isActiveAndEnabled);
+        var nonActiveItemsBeforeAdding = ShowcaseInventory.FindAll(x => !x.isActiveAndEnabled);
         if (nonActiveItemsBeforeAdding.Count() == 0)
         {
             return;
         }
-        var trying2FindItem = _backpackAbstraction.RemoveItem(_item.ItemName);
+        var trying2FindItem = BackpackAbstraction.RemoveItem(Item.ItemName);
         if (trying2FindItem != null)
         {
-            var nonActiveItems = _showcaseInventory.FindAll(x => !x.isActiveAndEnabled);
+            var nonActiveItems = ShowcaseInventory.FindAll(x => !x.isActiveAndEnabled);
             int randomNumber = UnityEngine.Random.Range(0, nonActiveItems.Count);
-            _enabledItems4Buyers++;
+            EnabledItems4Buyers++;
             nonActiveItems[randomNumber].gameObject.SetActive(true);
             BackpackWasWorker();
             if (BuyerEnteredTrigger.Count == 0)
@@ -198,14 +214,19 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IShowcase where T 
             }
             else
                 GiveItems2Buyer(BuyerEnteredTrigger[0]);
-
-
-
         }
     }
 
-
-
+    public void BuyingProcess()
+    {
+        if (_canvas.BuyCircle.fillAmount < 1)
+            _canvas.BuyCircle.fillAmount += Time.deltaTime;
+        else
+        {
+            _canvas.BuyCircle.fillAmount = 0;
+            BuyShowcase();
+        }
+    }
 }
 public enum DirectionOfQueue
 {
