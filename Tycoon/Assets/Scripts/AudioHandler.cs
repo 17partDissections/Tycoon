@@ -21,6 +21,7 @@ public class AudioHandler : MonoBehaviour
     public void OnMasterVolumeValueChanged(float percent)
     {
         _audioMixerGroup.audioMixer.SetFloat("MasterVolume", Mathf.Lerp(-80,0,percent));
+        //var slidervalue = Mathf.Lerp(0,1,percent);
     }
     public void OnMusicVolumeValueChanged(float percent)
     {

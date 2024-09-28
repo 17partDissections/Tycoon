@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using YG;
 
 public class Wallet : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class Wallet : MonoBehaviour
             _addMoneySignal?.Invoke();
         }
     }
-    [Range(0, 360)] [SerializeField] private int _startCoinsAmount;
+    [Range(0, 10000)] [SerializeField] private int _startCoinsAmount;
     private TextMeshProUGUI _visualCoins;
     private Action _addMoneySignal;
 
@@ -28,8 +27,9 @@ public class Wallet : MonoBehaviour
     {
         CoinsAmount = _startCoinsAmount;
         _visualCoins = GetComponentInChildren<TextMeshProUGUI>();
-        PrintMoney();
+        //_coinsAmount = YandexGame.savesData.Money;
         _addMoneySignal += PrintMoney;
+        PrintMoney();
     }
 
     private void PrintMoney()
@@ -49,5 +49,11 @@ public class Wallet : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        YandexGame.savesData.Money = _coinsAmount;
+        YandexGame.SaveProgress();
     }
 }

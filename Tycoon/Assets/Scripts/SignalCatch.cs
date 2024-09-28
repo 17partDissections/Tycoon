@@ -6,10 +6,13 @@ using Zenject;
 public class SignalCatch : MonoBehaviour
 {
     [SerializeField] private int _stageID;
+    [SerializeField] private int _deactivatingStageID;
     private EventBus _eventbus;
     [SerializeField] private bool gOSA_F;
     [SerializeField] private bool gOSA_T;
     [SerializeField] private bool isItShouldBeDeactivated;
+
+
     [Inject] private void Construct(EventBus bus)
     {
         _eventbus = bus;
@@ -27,7 +30,7 @@ public class SignalCatch : MonoBehaviour
         }
         if (isItShouldBeDeactivated)
         {
-        if(stage-1 == _stageID)
+        if(stage == _deactivatingStageID)
             gameObject.SetActive(false);
         }
 

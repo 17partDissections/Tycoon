@@ -162,7 +162,6 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
                 HashCoroutine = StartCoroutine(GrowCoroutine());
                 _isCoroutineStarted = true;
             }
-
         }
 
     }

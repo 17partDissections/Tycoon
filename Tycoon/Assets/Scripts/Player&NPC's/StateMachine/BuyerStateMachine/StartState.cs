@@ -13,13 +13,11 @@ public class StartState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Enter2State()
     {
-        //_stateMachine.Animator.SetBool(_stateMachine.waiting, false);
         _stateMachine.Agent.SetDestination(_stateMachine.WayPoint);
     }
 
     public override void Exit2State()
     {
-
     }
 
     public override void UpdateState()

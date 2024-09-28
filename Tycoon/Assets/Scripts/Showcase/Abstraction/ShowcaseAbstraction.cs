@@ -33,6 +33,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
     [SerializeField] private AudioClip _purchase;
     public Image BuyCircle;
     private bool _isPlayerInTrigger;
+    [SerializeField] private int _stage;
 
     public int PplInQueueAmount { get; set; }
     public Transform FirstPointOfQueue { get => _startOfQueuePosition; set => _startOfQueuePosition = value; }
@@ -43,7 +44,6 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
     {
         _lastPositionInQueue = _startOfQueuePosition.position;
         Item = ShowcaseInventory[0];
-        _storage.AddItem2Aviable(Item.ItemName, _lastPositionInQueue);
         _storage.AddQueueDirection(Item.ItemName, _directionOfQueue);
         _storage.AddShowcaseOrCashier(Item.ItemName, this);
         _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, ShowcasePrice, _buyCircle);
@@ -104,6 +104,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
 
         if (backpackAbstraction.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine stateMachine))
         {
+            
             var sameObjects = stateMachine.WannaBuy.Where(x => x == Item.ItemName);
             List<ItemName> RepeatingItemsList = new List<ItemName>(sameObjects);
 
@@ -127,7 +128,8 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
             _buyed = true;
             _audioHandler.PlaySFX(_purchase);
             _canvas.OnlyIcon();
-            _eventbus.StageSignal.Invoke(2);
+            _storage.AddItem2Aviable(Item.ItemName, _lastPositionInQueue);
+            _eventbus.StageSignal.Invoke(_stage);
         }
     }
 
@@ -184,6 +186,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
         }
         else
         {
+
             buyerStateMachine.Agent.SetDestination(buyerStateMachine.GetWannaBuyObjPosition(backpackBuyer.WannaBuy[0]));
             buyerStateMachine.Subscribe2NewItem(backpackBuyer.WannaBuy[0]);
             _queueHandler.MoveBuyersInQueue(Item.ItemName);

@@ -17,6 +17,8 @@ public class Cashier : MonoBehaviour, IShowcase
     [SerializeField] private Transform _startOfQueuePosition;
     private Vector3 _lastPositionInQueue;
     [SerializeField] private DirectionOfQueue _directionOfQueue;
+    [SerializeField] private Collider _buyerTrigger;
+    [SerializeField] private Collider _workerTrigger;
     [SerializeField] private List<GameObject> _moneyStages;
     [SerializeField] private List<Transform> _moneyObj;
     private Coroutine _cashCoroutine;
@@ -48,39 +50,50 @@ public class Cashier : MonoBehaviour, IShowcase
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerHotkeys>() != null)
+        if (_workerTrigger.bounds.Intersects(other.bounds))
         {
-            _isPlayerOnDaDesk = true;
-            if (!_isWorkerOnDaDesk)
-                _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
-            if (_finalCost > 0)
-                StartCoroutine(BringDaMoney(other));
-        }
-        else if (other.TryGetComponent<WorkerStateMachine>(out WorkerStateMachine workerStateMachine))
-        {
-            if (workerStateMachine.WorkerWork == Works.CashierWorker)
+            if (other.GetComponent<PlayerHotkeys>() != null)
             {
-                _isWorkerOnDaDesk = true;
-                if (_cashierWorkCoroutine != null)
-                {
-                    StopCoroutine(_cashierWorkCoroutine);
+                _isPlayerOnDaDesk = true;
+                if (!_isWorkerOnDaDesk)
                     _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
-                } 
+                if (_finalCost > 0)
+                    StartCoroutine(BringDaMoney(other));
             }
-
-        }
-        if (other.TryGetComponent<Backpack>(out Backpack backpack))
-            if (backpack is BackpackBuyer && backpack.IsBackpackFull())
+            else if (other.TryGetComponent<WorkerStateMachine>(out WorkerStateMachine workerStateMachine))
             {
-                if (_isWorkerOnDaDesk || _isPlayerOnDaDesk)
-                    SellItem(backpack);
-                else
-                    _waitingBuyers.Add(backpack as BackpackBuyer);
+                if (workerStateMachine.WorkerWork == Works.CashierWorker)
+                {
+                    _isWorkerOnDaDesk = true;
+                    if (_cashierWorkCoroutine != null)
+                    {
+                        StopCoroutine(_cashierWorkCoroutine);
+                        _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
+                    }
+                }
+
             }
+        }
+        else if (_buyerTrigger.bounds.Intersects(other.bounds))
+        {
+            if (other.TryGetComponent<Backpack>(out Backpack backpack))
+                if (backpack is BackpackBuyer && backpack.IsBackpackFull())
+                { 
+                    other.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
+                    if (_isWorkerOnDaDesk || _isPlayerOnDaDesk)
+                        SellItem(backpack);
+                    else
+                    {
+                        _waitingBuyers.Add(backpack as BackpackBuyer);
+                    }
+
+                }
+        }
+
+
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent<Backpack>(out Backpack backpack))
             if (other.GetComponent<PlayerHotkeys>() != null)
             {
                 _isPlayerOnDaDesk = false;

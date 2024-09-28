@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.ProBuilder.MeshOperations;
@@ -8,7 +10,7 @@ using Zenject;
 public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerStates>
 {
     public ObjectPool<BuyerStateMachine> ObjectPool;
-    //public Animator Animator;
+    [SerializeField] private Animator _animator;
     public Vector3 WayPoint;
     public NavMeshAgent Agent;
     public BackpackBuyer BackpackBuyer;
@@ -32,13 +34,13 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     }
 
 
-    [HideInInspector] public int waiting;
-
-
+    [HideInInspector] public int Waiting;
 
     private void Awake()
     {
-        waiting = Animator.StringToHash("Waiting");
+
+
+        Waiting = Animator.StringToHash("Waiting");
 
         StartState StartState = new StartState(BuyerStates.StartState, this);
         States.Add(BuyerStates.StartState, StartState);
@@ -51,6 +53,7 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         RunAwayState RunAwayState = new RunAwayState(BuyerStates.RunAwayState, this);
         States.Add(BuyerStates.RunAwayState, RunAwayState);
         StartMachine(BuyerStates.StartState);
+        CheckAgentVelocityAsync().Forget();
     }
     [Inject]
     public void Init(Storage storage, EventBus eventBus, QueueHandler queueHandler)
@@ -58,6 +61,7 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         Storage = storage;
         EventBus = eventBus;
         QueueHandler = queueHandler;
+
     }
     public void ChangeStateFromMachine(BuyerStates state)
     {
@@ -76,7 +80,18 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         going2ItemState.Subscribe2NewItem(itemName);
     }
 
+    private async UniTask CheckAgentVelocityAsync()
+    {
+        while (true) 
+        {
+            await UniTask.WaitUntilValueChanged(this, x => x.Agent.velocity.magnitude > 0.1f);
+            _animator.SetBool(Waiting, false);
+            await UniTask.WaitWhile(()=> Agent.velocity.magnitude > 0);
+            _animator.SetBool(Waiting, true);
+        }
 
+
+    }
 
 
 }

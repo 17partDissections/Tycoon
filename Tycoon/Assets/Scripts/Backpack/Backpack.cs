@@ -14,8 +14,13 @@ public abstract class Backpack : MonoBehaviour
         {
         Items.Add(item);
             item.gameObject.SetActive(true);
-            item.transform.rotation = Quaternion.identity;
-            item.transform.rotation = Quaternion.Euler(-90, 0, 0);
+            
+            if (item.ItemName != ItemName.StrawberryJam)
+            {
+                item.transform.rotation = Quaternion.identity;
+                item.transform.rotation = Quaternion.Euler(-90, 0, 0);
+            }
+
             item.transform.parent = _itemStartPosition;
             item.transform.position = Vector3.zero;
             SortItem();

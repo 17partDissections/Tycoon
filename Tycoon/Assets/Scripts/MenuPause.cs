@@ -6,6 +6,8 @@ using UnityEngine.WSA;
 
 public class MenuPause : MonoBehaviour
 {
+
+
     private bool _activated;
     [SerializeField] private GameObject _menuPanel;
     void Update()
@@ -15,7 +17,7 @@ public class MenuPause : MonoBehaviour
     private void Activate()
     {
         _menuPanel.SetActive(true);
-        //Time.timeScale = 0;
+        Time.timeScale = 0;
         //Time.unscaledTime = 0; 
         _activated = true;
     }
@@ -24,6 +26,16 @@ public class MenuPause : MonoBehaviour
         _menuPanel.SetActive(false);
         _activated = false;
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (materials.bounds.Intersects(other.bounds))
+    //    {
+    //        Debug.Log("ih8ny");
+
+    //    }
+    //    else if (donePorduction.bounds.Intersects(other.bounds)) { Debug.Log("123123123)"); };
+    //}
 
 
 }
