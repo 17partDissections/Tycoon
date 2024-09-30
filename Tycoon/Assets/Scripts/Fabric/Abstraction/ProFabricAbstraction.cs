@@ -87,23 +87,31 @@ public abstract class ProFabricAbstraction : FabricAbstraction
                 }
             }
         }
-        else
-        {
-            BuyFabric();
-            GetComponents<BoxCollider>()[0].enabled = false;
-            _materialTrigger.enabled = true;
-            _bakedTrigger.enabled = true;
-        }
     }
+
     protected override void OnTriggerStay(Collider other)
     {
-        //if (CanGrab)
-        //{
-        //    other.TryGetComponent<Backpack>(out Backpack backpack);
-        //    if (backpack is BackpackWorker && !backpack.IsBackpackFull())
-        //        MaterialsCount--;
-        //}
-        //base.OnTriggerStay(other);
+        if (Buyed)
+        {
+            //if (CanGrab)
+            //{
+            //    other.TryGetComponent<Backpack>(out Backpack backpack);
+            //    if (backpack is BackpackWorker && !backpack.IsBackpackFull())
+            //    {
+            //        AudioHandler.PlaySFX(PlantRemoving);
+            //        backpack?.SaveItem(ItemCopy);
+            //        CanGrab = false;
+            //        Canvas.Text.text = "";
+            //        GrowSignal.Invoke(Timer += 2); //disabling last phase visual object
+            //        if (HashCoroutine == null)
+            //            HashCoroutine = StartCoroutine(GrowCoroutine());
+            //    }
+            //}
+        }
+        else
+        {
+            BuyingProcess();
+        }
     }
     protected override IEnumerator GrowCoroutine()
     {
