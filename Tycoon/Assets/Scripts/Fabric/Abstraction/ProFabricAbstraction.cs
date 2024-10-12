@@ -113,6 +113,19 @@ public abstract class ProFabricAbstraction : FabricAbstraction
             BuyingProcess();
         }
     }
+
+    protected override void BuyFabric()
+    {
+        base.BuyFabric();
+        _materialTrigger.enabled = true;
+        _bakedTrigger.enabled = true;
+    }
+    public override void BuyFabricThroughLoad()
+    {
+        base.BuyFabricThroughLoad();
+        _materialTrigger.enabled = true;
+        _bakedTrigger.enabled = true;
+    }
     protected override IEnumerator GrowCoroutine()
     {
 

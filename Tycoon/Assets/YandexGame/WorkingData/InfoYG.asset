@@ -218,8 +218,10 @@ MonoBehaviour:
     de: 0
     hi: 0
   fonts:
-    defaultFont: []
-    ru: []
+    defaultFont:
+    - {fileID: 12800000, guid: da05befe423fc4fd787bd16a716f59d9, type: 3}
+    ru:
+    - {fileID: 12800000, guid: da05befe423fc4fd787bd16a716f59d9, type: 3}
     en: []
     tr: []
     az: []
@@ -304,7 +306,7 @@ MonoBehaviour:
     consumed: 1
   metricaEnable: 0
   metricaCounterID: 0
-  debug: 1
+  debug: 0
   archivingBuild: 1
   logoImageFormat: 1
   backgroundImageFormat: 3

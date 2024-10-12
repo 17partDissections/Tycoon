@@ -17,7 +17,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4237270380712220
 Transform:
@@ -96,5 +96,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1448daf2c1d04ad499d2b3d7a4db61c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cost: 10
   _itemName: 1

@@ -6,12 +6,12 @@ using UnityEngine;
 using Zenject;
 using DG.Tweening;
 
-public class Cashier : MonoBehaviour, IShowcase
+public class CashierOld : MonoBehaviour, IShowcase
 {
     private Wallet _wallet;
     private QueueHandler _queueHandler;
     private int _finalCost;
-    private bool _isPlayerOnDaDesk;
+    private Collider _isPlayerOnDaDesk;
     private bool _isWorkerOnDaDesk;
     private List<BackpackBuyer> _waitingBuyers = new List<BackpackBuyer>();
     [SerializeField] private Transform _startOfQueuePosition;
@@ -54,7 +54,7 @@ public class Cashier : MonoBehaviour, IShowcase
         {
             if (other.GetComponent<PlayerHotkeys>() != null)
             {
-                _isPlayerOnDaDesk = true;
+                _isPlayerOnDaDesk = other;
                 if (!_isWorkerOnDaDesk)
                     _cashierWorkCoroutine = StartCoroutine(WaiterWorkCoroutine());
                 if (_finalCost > 0)
@@ -75,28 +75,42 @@ public class Cashier : MonoBehaviour, IShowcase
             }
         }
         else if (_buyerTrigger.bounds.Intersects(other.bounds))
-        {
+        { 
             if (other.TryGetComponent<Backpack>(out Backpack backpack))
                 if (backpack is BackpackBuyer && backpack.IsBackpackFull())
-                { 
+                {
+                    Debug.Log("backpackBuyer");
                     other.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
                     if (_isWorkerOnDaDesk || _isPlayerOnDaDesk)
-                        SellItem(backpack);
+                    {
+                        //StartCoroutine(BuyerCoroutine(backpack));
+                    }
+                    if (_isPlayerOnDaDesk)
+                    {
+                        StartCoroutine(BringDaMoney(_isPlayerOnDaDesk));
+                    }
                     else
                     {
                         _waitingBuyers.Add(backpack as BackpackBuyer);
                     }
-
                 }
         }
-
-
     }
+
+    //private IEnumerator BuyerCoroutine(Backpack backpack)
+    //{
+    //    yield return new WaitForSeconds(2);
+    //    if (backpack)
+    //        SellItem(backpack);
+    //    else
+    //        SellItem(_waitingBuyers[0]);
+    //}
+
     private void OnTriggerExit(Collider other)
     {
             if (other.GetComponent<PlayerHotkeys>() != null)
             {
-                _isPlayerOnDaDesk = false;
+            _isPlayerOnDaDesk = null;
                 if (!_isWorkerOnDaDesk)
                 StopCoroutine(_cashierWorkCoroutine);
             }
@@ -143,12 +157,12 @@ public class Cashier : MonoBehaviour, IShowcase
     {
         while (true)
         {
+            //yield return new WaitForSeconds(1f);
             if (_waitingBuyers.Count > 0)
             {
                 SellItem(_waitingBuyers[0]);
                 _waitingBuyers.RemoveAt(0);
             }
-            yield return new WaitForSeconds(2.5f);
         }
     }
     private IEnumerator BringDaMoney(Collider playerCollider)

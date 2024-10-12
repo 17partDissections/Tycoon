@@ -2,6 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StrawberryJamShowcase : ShowcaseAbstraction<StrawberryJam>
+public class StrawberryJamShowcase : ShowcaseAbstraction
 {
 }

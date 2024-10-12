@@ -12,7 +12,6 @@ public class ThinkinState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Enter2State()
     {
-        //_stateMachine.Animator.SetBool(_stateMachine.waiting, true);
         ItemName[] list = _stateMachine.Storage.GetAviableItems();
         for (int i = 0; i < _stateMachine.WannaBuy.Length; i++)
         {
@@ -20,7 +19,7 @@ public class ThinkinState : BaseState<BuyerStateMachine.BuyerStates>
         }
         _stateMachine.BackpackBuyer.WannaBuy.Clear();
         _stateMachine.BackpackBuyer.WannaBuy.AddRange(_stateMachine.WannaBuy);
-        ChangeStateAction(BuyerStateMachine.BuyerStates.Going2ItemState);
+        _stateMachine.StartCoroutine(Thinking());
 
     }
 
@@ -37,5 +36,10 @@ public class ThinkinState : BaseState<BuyerStateMachine.BuyerStates>
     {
         int randomNumber = Random.Range(0, list.Length);
         return randomNumber;    
+    }
+    public IEnumerator Thinking()
+    {
+        yield return new WaitForSeconds(1);
+        ChangeStateAction(BuyerStateMachine.BuyerStates.Going2ItemState);
     }
 }

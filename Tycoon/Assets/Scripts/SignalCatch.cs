@@ -30,7 +30,7 @@ public class SignalCatch : MonoBehaviour
         }
         if (isItShouldBeDeactivated)
         {
-        if(stage == _deactivatingStageID)
+        if(stage >= _deactivatingStageID)
             gameObject.SetActive(false);
         }
 

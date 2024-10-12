@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using Zenject;
+using YG;
 
 public abstract class FabricAbstraction : MonoBehaviour, IBuyable
 {
@@ -25,7 +26,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
 
     public bool CanGrab;
     private bool _isCoroutineStarted;
-    protected bool Buyed;
+    public bool Buyed;
     protected Coroutine HashCoroutine;
 
     protected FabricsNShowcasesCanvas Canvas;
@@ -38,7 +39,20 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
     protected AudioHandler AudioHandler;
     [SerializeField] private AudioClip _purchase;
     [SerializeField] protected AudioClip PlantRemoving;
+    private SaveSystem _saveSystem;
 
+    private void OnDestroy()
+    {
+        YandexGame.SaveProgress();
+    }
+    [Inject]
+    private void Construct(SaveSystem saveSys, EventBus bus, Wallet wallet, AudioHandler audioSources)
+    {
+        _saveSystem = saveSys;
+        _eventbus = bus;
+        _playerWallet = wallet;
+        AudioHandler = audioSources;
+    }
     protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
@@ -98,19 +112,12 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
     {
         if (other.tag == "Player")
         {
-                Canvas.BuyCircle.fillAmount = 0;
-                _isPlayerInTrigger = false;
-           
+            Canvas.BuyCircle.fillAmount = 0;
+            _isPlayerInTrigger = false;
+
         }
     }
 
-    [Inject]
-    private void Construct(EventBus bus, Wallet wallet, AudioHandler audioSources)
-    {
-        _eventbus = bus;
-        _playerWallet = wallet;
-        AudioHandler = audioSources;
-    }
     protected virtual IEnumerator GrowCoroutine()
     {
         Timer = 0;
@@ -133,7 +140,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
         HashCoroutine = null;
     }
 
-    private void Start()
+    private void Awake()
     {
         Canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, FabricPrice, _buyCircle);
 
@@ -146,7 +153,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
         _itemIcon = parentObj.GetComponentInChildren<Image>();
         _text = parentObj.GetComponentInChildren<TextMeshProUGUI>();
     }
-    public void BuyFabric()
+    protected virtual void BuyFabric()
     {
         if (_playerWallet.Trying2BuySmthng(FabricPrice) == true)
         {
@@ -162,10 +169,37 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
                 HashCoroutine = StartCoroutine(GrowCoroutine());
                 _isCoroutineStarted = true;
             }
+            _saveSystem.SaveFabric(this);
         }
 
     }
+    public virtual void BuyFabricThroughLoad()
+    {
+        Buyed = true;
+        Debug.Log(Canvas);
+        if (Canvas == null)
+        {
+            Canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, FabricPrice, _buyCircle);
+            Canvas.OnlyIcon();
+        }
+        else
+            Canvas.OnlyIcon();
 
+
+        Debug.Log(gameObject.activeInHierarchy);
+        if (_isItHaveTilliage)
+            _tilliage.SetActive(true);
+        _eventbus.StageSignal.Invoke(_stage);
+
+
+        if (_isCoroutineStarted == false)
+        {
+            Debug.Log($"{gameObject.name} Iearchy enable = {gameObject.activeInHierarchy}");
+            HashCoroutine = StartCoroutine(GrowCoroutine());
+            _isCoroutineStarted = true;
+        }
+        _saveSystem.SaveFabric(this);
+    }
     public void BuyingProcess()
     {
 

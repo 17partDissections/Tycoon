@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StrawberryShowcase : ShowcaseAbstraction<Strawberry>
+public class StrawberryShowcase : ShowcaseAbstraction
 {
 
 }

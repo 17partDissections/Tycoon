@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
-public class WatermelonShowcase : ShowcaseAbstraction<Watermelon>
+public class WatermelonShowcase : ShowcaseAbstraction
 {
     protected override void BackpackWasWorker()
     {
@@ -18,10 +15,11 @@ public class WatermelonShowcase : ShowcaseAbstraction<Watermelon>
         {
             var nonActiveItems = ShowcaseInventory.FindAll(x => !x.isActiveAndEnabled);
             int randomNumber1 = Random.Range(0, nonActiveItems.Count);
-            int randomNumber2 = Random.Range(0, nonActiveItems.Count);
-            EnabledItems4Buyers+=2;
             nonActiveItems[randomNumber1].gameObject.SetActive(true);
+            nonActiveItems = ShowcaseInventory.FindAll(x => !x.isActiveAndEnabled);
+            int randomNumber2 = Random.Range(0, nonActiveItems.Count);
             nonActiveItems[randomNumber2].gameObject.SetActive(true);
+            EnabledItems4Buyers += 2;
             BackpackWasWorker();
             if (BuyerEnteredTrigger.Count == 0)
             {
@@ -30,7 +28,7 @@ public class WatermelonShowcase : ShowcaseAbstraction<Watermelon>
             else
             {
                 GiveItems2Buyer(BuyerEnteredTrigger[0]);
-                GiveItems2Buyer(BuyerEnteredTrigger[0]);
+                //GiveItems2Buyer(BuyerEnteredTrigger[0]);
             }
 
         }

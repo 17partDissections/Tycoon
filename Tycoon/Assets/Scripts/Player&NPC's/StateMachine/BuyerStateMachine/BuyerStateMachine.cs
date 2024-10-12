@@ -1,9 +1,7 @@
 using Cysharp.Threading.Tasks;
-using System;
-using Unity.Collections.LowLevel.Unsafe;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.ProBuilder.MeshOperations;
 using Zenject;
 
 
@@ -29,7 +27,6 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         ThinkinState,
         Going2ItemState,
         Going2CashierState,
-        Waiting4DaWaiterState,
         RunAwayState,
     }
 
@@ -92,6 +89,8 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
 
 
     }
+
+
 
 
 }

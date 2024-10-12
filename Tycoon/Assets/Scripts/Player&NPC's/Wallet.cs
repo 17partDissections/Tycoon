@@ -18,7 +18,7 @@ public class Wallet : MonoBehaviour
             _addMoneySignal?.Invoke();
         }
     }
-    [Range(0, 10000)] [SerializeField] private int _startCoinsAmount;
+    [Range(0, 160)] [SerializeField] private int _startCoinsAmount;
     private TextMeshProUGUI _visualCoins;
     private Action _addMoneySignal;
 
@@ -27,7 +27,7 @@ public class Wallet : MonoBehaviour
     {
         CoinsAmount = _startCoinsAmount;
         _visualCoins = GetComponentInChildren<TextMeshProUGUI>();
-        //_coinsAmount = YandexGame.savesData.Money;
+        _coinsAmount = YandexGame.savesData.Money;
         _addMoneySignal += PrintMoney;
         PrintMoney();
     }

@@ -1,4 +1,7 @@
 ﻿
+using System;
+using Zenject;
+
 namespace YG
 {
     [System.Serializable]
@@ -19,6 +22,8 @@ namespace YG
         // Ваши сохранения
 
         public int Money;
+        public ShowcaseSave[] showcaseSave;
+        public FabricSave[] fabricSave;
 
         // Поля (сохранения) можно удалять и создавать новые. При обновлении игры сохранения ломаться не должны
 
@@ -27,8 +32,19 @@ namespace YG
         public SavesYG()
         {
             // Допустим, задать значения по умолчанию для отдельных элементов массива
-
+            Money = 60;
             openLevels[1] = true;
+        }
+        [Serializable] public class ShowcaseSave
+        {
+            public string ShowcaseName;
+            public bool Buyed;
+            public int ReservedSlots;
+        }
+        [Serializable] public class FabricSave
+        {
+            public string FabricName;
+            public bool Buyed;
         }
     }
 }

@@ -2,27 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using TMPro;
 using Tycoon.PlayerSystems;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 using Zenject;
 
-public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcase where T : Item
+public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
 {
     public int ShowcasePrice;
-
-    [SerializeField] protected List<T> ShowcaseInventory;
+    
+    [SerializeField] protected List<Item> ShowcaseInventory;
     [SerializeField] protected List<BackpackBuyer> BuyerEnteredTrigger = new List<BackpackBuyer>();
-    protected T Item;
-    protected int EnabledItems4Buyers;
+    public Item Item;
+    public int EnabledItems4Buyers;
     private EventBus _eventbus;
     private Storage _storage;
     private Wallet _playerWallet;
     private QueueHandler _queueHandler;
     private AudioHandler _audioHandler;
     protected Backpack BackpackAbstraction;
-    private bool _buyed = false;
+    [HideInInspector] public bool Buyed = false;
     private FabricsNShowcasesCanvas _canvas;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TextMeshProUGUI _text;
@@ -34,6 +36,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
     public Image BuyCircle;
     private bool _isPlayerInTrigger;
     [SerializeField] private int _stage;
+    private SaveSystem _saveSystem;
 
     public int PplInQueueAmount { get; set; }
     public Transform FirstPointOfQueue { get => _startOfQueuePosition; set => _startOfQueuePosition = value; }
@@ -42,6 +45,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
 
     private void Awake()
     {
+        
         _lastPositionInQueue = _startOfQueuePosition.position;
         Item = ShowcaseInventory[0];
         _storage.AddQueueDirection(Item.ItemName, _directionOfQueue);
@@ -49,9 +53,14 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
         _canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, ShowcasePrice, _buyCircle);
 
     }
-    [Inject]
-    private void Construct(EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
+    private void OnDestroy()
     {
+        YandexGame.SaveProgress();
+    }
+    [Inject]
+    private void Construct(SaveSystem saveSys, EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
+    {
+        _saveSystem = saveSys;
         _eventbus = bus;
         _storage = storage;
         _playerWallet = wallet;
@@ -62,7 +71,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
     {
         if (other.tag == "Player")
             _isPlayerInTrigger = true;
-        if (_buyed)
+        if (Buyed)
         {
             if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction))
             {
@@ -86,7 +95,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
     }
     private void OnTriggerStay(Collider other)
     {
-        if(!_buyed)
+        if(!Buyed)
             if (other.tag == "Player")
                 BuyingProcess();
     }
@@ -123,14 +132,23 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
 
     public void BuyShowcase()
     {
+
         if (_playerWallet.Trying2BuySmthng(ShowcasePrice) == true)
         {
-            _buyed = true;
+            Buyed = true;
             _audioHandler.PlaySFX(_purchase);
             _canvas.OnlyIcon();
             _storage.AddItem2Aviable(Item.ItemName, _lastPositionInQueue);
             _eventbus.StageSignal.Invoke(_stage);
+            _saveSystem.SaveShowcase(this);
         }
+    }
+    public void BuyShowcaseTroughLoader()
+    {
+        Buyed = true;
+        _canvas.OnlyIcon();
+        _storage.AddItem2Aviable(Item.ItemName, _lastPositionInQueue);
+        _eventbus.StageSignal.Invoke(_stage);
     }
 
     private void GiveItems2Buyer(Backpack backpackAbstraction, List<ItemName> RepeatingItemsList)
@@ -158,6 +176,7 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
             backpackBuyer.SaveItem(itemCopyOfGameObject);
             EnabledItems4Buyers--;
             backpackBuyer.RepeatingItems.RemoveAt(0);
+            _saveSystem.SaveShowcase(this);
             var ActiveItems = ShowcaseInventory.FindAll(x => x.isActiveAndEnabled);
             ActiveItems[0].gameObject.SetActive(false);
             backpackBuyer.WannaBuy.Remove(Item.ItemName);
@@ -218,6 +237,14 @@ public abstract class ShowcaseAbstraction<T> : MonoBehaviour, IBuyable, IShowcas
             else
                 GiveItems2Buyer(BuyerEnteredTrigger[0]);
         }
+        _saveSystem.SaveShowcase(this);
+    }
+    public void LoadItems()
+    {
+        var nonActiveItems = ShowcaseInventory.FindAll(x => !x.isActiveAndEnabled);
+        int randomNumber = UnityEngine.Random.Range(0, nonActiveItems.Count);
+        EnabledItems4Buyers++;
+        nonActiveItems[randomNumber].gameObject.SetActive(true);
     }
 
     public void BuyingProcess()

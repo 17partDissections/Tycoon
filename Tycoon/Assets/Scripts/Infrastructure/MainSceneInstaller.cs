@@ -11,6 +11,7 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     [SerializeField] private List<BuyerStateMachine> _buyers;
     [SerializeField] private PlayerHotkeys _player;
     [SerializeField] private AudioHandler _audioHandler;
+    [SerializeField] private InternetCanvas _internetCanvas;
 
     public void Initialize()
     {
@@ -29,7 +30,35 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindWallet();
         BindQueueHandler();
         BindAudioHandler();
+        BindSaveSystem();
+        BindLoadSystem();
+        BindInternet();
     }
+    private void BindSaveSystem()
+    {
+        Container
+            .Bind<SaveSystem>()
+            .FromNew()
+            .AsSingle()
+            .NonLazy();
+    }
+    private void BindLoadSystem()
+    {
+        Container
+            .Bind<LoadSystem>()
+            .FromNew()
+            .AsSingle()
+            .NonLazy();
+    }
+    private void BindInternet()
+    {
+        Container
+            .Bind<InternetCanvas>()
+            .FromInstance(_internetCanvas)
+            .AsSingle()
+            .NonLazy();
+    }
+
 
     private void BindAudioHandler()
     {
