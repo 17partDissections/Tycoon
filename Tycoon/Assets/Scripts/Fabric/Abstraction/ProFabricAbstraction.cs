@@ -2,9 +2,8 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using YG;
 
 public abstract class ProFabricAbstraction : FabricAbstraction
 {
@@ -16,6 +15,9 @@ public abstract class ProFabricAbstraction : FabricAbstraction
     [SerializeField] private List<Item> _baked;
     [SerializeField] private Collider _materialTrigger;
     [SerializeField] private Collider _bakedTrigger;
+    private List<Item> _foundAllBaked;
+    [SerializeField] private int _materialAnimationObjTime;
+    [SerializeField] private int _bakedAnimationObjTime;
 
 
     protected override void OnTriggerEnter(Collider other)
@@ -30,20 +32,20 @@ public abstract class ProFabricAbstraction : FabricAbstraction
                     List<Item> foundMaterials = backpack.Items.FindAll(item => item.ItemName == _material);
                     List<Item> materialsInInventory = _materials.FindAll(item => !item.isActiveAndEnabled);
 
-                    Debug.Log(foundMaterials.Count + "Count");
                     if (HashCoroutine == null)
+                    {
                         HashCoroutine = StartCoroutine(GrowCoroutine());
+                    }
+
 
                     if (true)
                     {
                         var cycle = 0;
                         foreach (Item foundMaterial in foundMaterials)
                         {
-                            //int randomNumber = Random.Range(0, materialsInInventory.Count);
-                            materialsInInventory[/*randomNumber*/cycle].gameObject.SetActive(true);
+                            if (cycle == 4) break;
+                            materialsInInventory[cycle].gameObject.SetActive(true);
                             backpack.RemoveItem(foundMaterial.ItemName);
-
-
                             MaterialsCount++;
                             cycle++;
                         }
@@ -54,16 +56,12 @@ public abstract class ProFabricAbstraction : FabricAbstraction
             }
             else if (_bakedTrigger.bounds.Intersects(other.bounds))
             {
-                Debug.Log("intersects");
                 if (CanGrab)
                 {
-                    Debug.Log("canGrab");
-                    Debug.Log(_itemCopies.Count);
                     while (_itemCopies.Count != 0)
                     {
                         if (backpack is BackpackWorker && !backpack.IsBackpackFull())
                         {
-                            Debug.Log("Trying2SveItem");
 
                             AudioHandler.PlaySFX(PlantRemoving);
                             backpack?.SaveItem(_itemCopies[0]);
@@ -73,10 +71,12 @@ public abstract class ProFabricAbstraction : FabricAbstraction
                             Canvas.Text.text = "";
                             GrowSignal?.Invoke(Timer += 2); //disabling last phase visual object
                             MaterialsCount--;
+
                             if (HashCoroutine == null)
                             {
                                 HashCoroutine = StartCoroutine(GrowCoroutine());
                             }
+                            
                         }
                         else
                         {
@@ -84,6 +84,7 @@ public abstract class ProFabricAbstraction : FabricAbstraction
                             break;
                         }
                     }
+                    _foundAllBaked = _baked.FindAll(item => !item.isActiveAndEnabled);
                 }
             }
         }
@@ -130,9 +131,13 @@ public abstract class ProFabricAbstraction : FabricAbstraction
     {
 
         Timer = 0;
-        var foundAllBacked = _baked.FindAll(item => !item.isActiveAndEnabled);
+        _foundAllBaked = _baked.FindAll(item => !item.isActiveAndEnabled);
+        Debug.Log("material count: " + MaterialsCount);
+        Debug.Log("foundallbaked: " + _foundAllBaked.Count);
         yield return new WaitWhile(() => MaterialsCount == 0);
-        yield return new WaitWhile(() => foundAllBacked.Count == 0);
+        Debug.Log("12312331");
+        yield return new WaitWhile(() => _foundAllBaked.Count == 0);
+        Debug.Log("Start Of Coroutine");
         yield return new WaitForSeconds(0.5f);
         List<Item> materialsInInventory = _materials.FindAll(item => item.isActiveAndEnabled);
         //int randomNumber = Random.Range(0, materialsInInventory.Count);
@@ -141,42 +146,91 @@ public abstract class ProFabricAbstraction : FabricAbstraction
         MaterialsCount--;
         var materialAnimationObject = gameObject.GetComponentsInChildren<Transform>().First(x => x.name == "MaterialAnimationObject");
         var bakedAnimationObject = gameObject.GetComponentsInChildren<Transform>().First(x => x.name == "BakedAnimationObject");
-        materialAnimationObject.GetComponent<MeshRenderer>().enabled = true;
+        materialAnimationObject.TryGetComponent<MeshRenderer>(out MeshRenderer mMeshRenderer);
+        mMeshRenderer.enabled = true;
         var savedMaterialAObjTransform = materialAnimationObject.transform.position;
-        bakedAnimationObject.GetComponent<MeshRenderer>().enabled = true;
+        bakedAnimationObject.TryGetComponent<MeshRenderer>(out MeshRenderer bMeshRenderer);
+        if (bMeshRenderer != null) bMeshRenderer.enabled = true;
+        else
+            bakedAnimationObject.transform.GetChild(0).gameObject.SetActive(true);
+        Tween tween = null;
         var savedBakedAObjTransform = bakedAnimationObject.transform.position;
-        materialAnimationObject.DOMove(materialAnimationObject.transform.position + Vector3.forward, 5).SetEase(Ease.Linear)
-            .OnComplete(() => bakedAnimationObject.DOMove(bakedAnimationObject.transform.position + Vector3.right * 2.5f, 10).SetEase(Ease.Linear));
+        materialAnimationObject.DOMove(materialAnimationObject.transform.position + Vector3.forward, _materialAnimationObjTime).SetEase(Ease.Linear)
+            .OnComplete(() =>
+            {
+                tween = bakedAnimationObject.DOMove(bakedAnimationObject.transform.position + Vector3.right * 2.5f, _bakedAnimationObjTime).SetEase(Ease.Linear);
+            }
+        );
         while (Timer < GrowSpeed)
         {
             yield return new WaitForSeconds(1);
             Timer++;
             GrowSignal?.Invoke(Timer);
             Canvas.Text.text = (Timer + "/" + GrowSpeed).ToString();
-
         }
-        var found = _baked.First(item => !item.isActiveAndEnabled);
+        yield return tween.WaitForCompletion();
+        materialAnimationObject.GetComponent<MeshRenderer>().enabled = false;
+        materialAnimationObject.transform.position = savedMaterialAObjTransform;
+        if (bMeshRenderer != null) bMeshRenderer.enabled = false;
+        else
+            bakedAnimationObject.transform.GetChild(0).gameObject.SetActive(false);
+        bakedAnimationObject.transform.position = savedBakedAObjTransform;
+        var found = _baked.FirstOrDefault(item => !item.isActiveAndEnabled);
         GetBackAnimationObjects2DefaultPositions(materialAnimationObject, bakedAnimationObject, savedMaterialAObjTransform, savedBakedAObjTransform);
-        Canvas.Text.text = "done";
-        //var itemCopyOfGameObject = Instantiate(found[_itemCopies.Count], found[_itemCopies.Count].transform.position, Quaternion.Euler(0, 0, 0));
-        if (false != found)
+        if (YandexGame.lang == "en")
+            Canvas.Text.text = "done";
+        else if (YandexGame.lang == "ru")
+            Canvas.Text.text = "готово";
+        if (found != null)
         {
             found.gameObject.SetActive(true);
-            _itemCopies.Add(Instantiate(found));
+            switch (this.Item.ItemName)
+            {
+                case ItemName.Strawberry:
+                    UseObj(_itemHandler.StrawberryPool); break;
+                case ItemName.Banana:
+                    UseObj(_itemHandler.BananaPool); break;
+                case ItemName.Lemon:
+                    UseObj(_itemHandler.LemonPool); break;
+                case ItemName.StrawberryJam:
+                    UseObj(_itemHandler.StrawberryJamPool); break;
+                case ItemName.Lemonade:
+                    UseObj(_itemHandler.LemonadePool); break;
+                case ItemName.Watermelon:
+                    UseObj(_itemHandler.WatermelonPool); break;
+            }
         }
 
         CanGrab = true;
         if (MaterialsCount > 0)
             HashCoroutine = StartCoroutine(GrowCoroutine());
         else
+        {
+            Debug.Log("END OF COROUTINE");
             HashCoroutine = null;
+        }
+
+    }
+    protected override void UseObj<T>(ObjectPool<T> pool)
+    {
+        var item = pool.GetFromPool();
+        item.TryGetComponent(out Item itemClass);
+        if (itemClass != null)
+        {
+            ItemObj = itemClass;
+            _itemCopies.Add(item);
+        }
     }
 
     private void GetBackAnimationObjects2DefaultPositions(Transform materialAnimationObject, Transform bakedAnimationObject, Vector3 savedMaterialAObjTransform, Vector3 savedBakedAObjTransform)
     {
         materialAnimationObject.GetComponent<MeshRenderer>().enabled = false;
         materialAnimationObject.transform.position = savedMaterialAObjTransform;
-        bakedAnimationObject.GetComponent<MeshRenderer>().enabled = false;
+        bakedAnimationObject.TryGetComponent<MeshRenderer>(out MeshRenderer bMeshRenderer);
+        if (bMeshRenderer != null)
+            bMeshRenderer.enabled = false;
+        else
+            bakedAnimationObject.transform.GetChild(0).gameObject.SetActive(false);
         bakedAnimationObject.transform.position = savedBakedAObjTransform;
     }
 }

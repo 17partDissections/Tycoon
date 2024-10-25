@@ -22,5 +22,10 @@ namespace Tycoon.Factories
             //buyer.GetComponent<BuyerStateMachine>().Init(_container.Resolve<Storage>());
             return buyer;
         }
+
+        public GameObject Create<T>() where T : MonoBehaviour
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

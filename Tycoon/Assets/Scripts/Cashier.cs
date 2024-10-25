@@ -134,7 +134,7 @@ public class Cashier : MonoBehaviour, IShowcase
                 Debug.Log("Stage= " + 2);
                 break;
         }
-        backpack.DestroyAllItems();
+        backpack.DropBack2PoolAllItems();
         _audioHandler.PlaySFX(_purchase);
         backpack.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
         _queueHandler.MoveBuyersInQueue(ItemName.Cashier);

@@ -11,7 +11,7 @@ public class TrashCan : MonoBehaviour
         if(other.TryGetComponent<PlayerHotkeys>(out  PlayerHotkeys hotkeys))
             if (other.TryGetComponent<Backpack>(out Backpack backpackAbstraction))
             {
-                backpackAbstraction.DestroyAllItems();
+                backpackAbstraction.DropBack2PoolAllItems();
             }
     }
 }

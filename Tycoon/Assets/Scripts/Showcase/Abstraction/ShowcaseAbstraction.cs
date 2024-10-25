@@ -36,6 +36,7 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
     public Image BuyCircle;
     private bool _isPlayerInTrigger;
     [SerializeField] private int _stage;
+    private ItemHandler _itemHandler;
     private SaveSystem _saveSystem;
 
     public int PplInQueueAmount { get; set; }
@@ -58,8 +59,9 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
         YandexGame.SaveProgress();
     }
     [Inject]
-    private void Construct(SaveSystem saveSys, EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
+    private void Construct(SaveSystem saveSys, ItemHandler itemHandler, EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
     {
+        _itemHandler = itemHandler;
         _saveSystem = saveSys;
         _eventbus = bus;
         _storage = storage;
@@ -172,8 +174,21 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
         var backpackBuyer = backpackAbstraction as BackpackBuyer;
         if (backpackAbstraction.IsBackpackFull() == false && backpackBuyer.RepeatingItems.Count() > 0)
         {
-            var itemCopyOfGameObject = Instantiate(Item, gameObject.transform);
-            backpackBuyer.SaveItem(itemCopyOfGameObject);
+            Item item = null;
+            switch (this.Item.ItemName)
+            {
+                case ItemName.Strawberry:
+                    item = UseObj(_itemHandler.StrawberryPool); break;
+                case ItemName.Banana:
+                    item = UseObj(_itemHandler.BananaPool); break;
+                case ItemName.Lemon:
+                    item = UseObj(_itemHandler.LemonPool); break;
+                case ItemName.StrawberryJam:
+                    item = UseObj(_itemHandler.StrawberryJamPool); break;
+                case ItemName.Watermelon:
+                    item = UseObj(_itemHandler.WatermelonPool); break;
+            }
+            backpackBuyer.SaveItem(item);
             EnabledItems4Buyers--;
             backpackBuyer.RepeatingItems.RemoveAt(0);
             _saveSystem.SaveShowcase(this);
@@ -190,7 +205,12 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
         }
         
     }
-
+    private Item UseObj<T>(ObjectPool<T> pool) where T : Item
+    {
+        var item = pool.GetFromPool();
+            return item;
+            //ItemObj = itemClass;
+    }
     private void RemovingFromBuyerEnteredTrigger(BackpackBuyer backpackBuyer)
     {
         BuyerStateMachine buyerStateMachine = backpackBuyer.GetComponent<BuyerStateMachine>();

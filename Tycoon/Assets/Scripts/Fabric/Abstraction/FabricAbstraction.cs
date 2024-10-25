@@ -14,7 +14,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
     [SerializeField] private GameObject _tilliage;
     [SerializeField] protected GameObject VisualTemplate;
     [SerializeField] private bool _isItHaveTilliage = true;
-    protected Item ItemCopy;
+    protected Item ItemObj;
     [SerializeField] private int _growSpeed;
     protected int GrowSpeed => _growSpeed;
     public Action<int> GrowSignal;
@@ -40,14 +40,16 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
     [SerializeField] private AudioClip _purchase;
     [SerializeField] protected AudioClip PlantRemoving;
     private SaveSystem _saveSystem;
+    protected ItemHandler _itemHandler;
 
     private void OnDestroy()
     {
         YandexGame.SaveProgress();
     }
     [Inject]
-    private void Construct(SaveSystem saveSys, EventBus bus, Wallet wallet, AudioHandler audioSources)
+    private void Construct(SaveSystem saveSys, ItemHandler itemHandler, EventBus bus, Wallet wallet, AudioHandler audioSources)
     {
+        _itemHandler = itemHandler;
         _saveSystem = saveSys;
         _eventbus = bus;
         _playerWallet = wallet;
@@ -66,7 +68,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
                 if (backpack is BackpackWorker && !backpack.IsBackpackFull())
                 {
                     AudioHandler.PlaySFX(PlantRemoving);
-                    backpack?.SaveItem(ItemCopy);
+                    backpack?.SaveItem(ItemObj);
                     CanGrab = false;
                     Canvas.Text.text = "";
                     GrowSignal.Invoke(Timer += 2); //disabling last phase visual object
@@ -93,7 +95,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
                 if (backpack is BackpackWorker && !backpack.IsBackpackFull())
                 {
                     AudioHandler.PlaySFX(PlantRemoving);
-                    backpack?.SaveItem(ItemCopy);
+                    backpack?.SaveItem(ItemObj);
                     CanGrab = false;
                     Canvas.Text.text = "";
                     GrowSignal.Invoke(Timer += 2); //disabling last phase visual object
@@ -118,6 +120,7 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
         }
     }
 
+
     protected virtual IEnumerator GrowCoroutine()
     {
         Timer = 0;
@@ -129,16 +132,39 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
             Canvas.Text.text = (Timer + "/" + _growSpeed).ToString();
 
         }
-        Canvas.Text.text = "done";
-        var itemCopyOfGameObject = Instantiate(VisualTemplate, gameObject.transform);
-        itemCopyOfGameObject.TryGetComponent(out Item itemCopy);
-        if (itemCopy != null)
+        if(YandexGame.lang=="en")
+            Canvas.Text.text = "done";
+        else if(YandexGame.lang=="ru")
+            Canvas.Text.text = "готово";
+        switch (this.Item.ItemName)
         {
-            ItemCopy = itemCopy;
+            case ItemName.Strawberry:
+                UseObj(_itemHandler.StrawberryPool); break;
+            case ItemName.Banana:
+                UseObj(_itemHandler.BananaPool); break;
+            case ItemName.Lemon:
+                UseObj(_itemHandler.LemonPool); break;
+            case ItemName.StrawberryJam:
+                UseObj(_itemHandler.StrawberryJamPool); break;
+            case ItemName.Lemonade:
+                UseObj(_itemHandler.LemonadePool); break;
+            case ItemName.Watermelon:
+                UseObj(_itemHandler.WatermelonPool); break;
         }
+
         CanGrab = true;
         HashCoroutine = null;
     }
+    protected virtual void UseObj<T>(ObjectPool<T> pool) where T : Item
+    {
+        var item = pool.GetFromPool();
+        item.TryGetComponent(out Item itemClass);
+        if (itemClass != null)
+        {
+            ItemObj = itemClass;
+        }
+    }
+
 
     private void Awake()
     {
@@ -176,7 +202,6 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
     public virtual void BuyFabricThroughLoad()
     {
         Buyed = true;
-        Debug.Log(Canvas);
         if (Canvas == null)
         {
             Canvas = new FabricsNShowcasesCanvas(_itemIcon, _text, FabricPrice, _buyCircle);
@@ -186,7 +211,6 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
             Canvas.OnlyIcon();
 
 
-        Debug.Log(gameObject.activeInHierarchy);
         if (_isItHaveTilliage)
             _tilliage.SetActive(true);
         _eventbus.StageSignal.Invoke(_stage);
@@ -194,7 +218,6 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
 
         if (_isCoroutineStarted == false)
         {
-            Debug.Log($"{gameObject.name} Iearchy enable = {gameObject.activeInHierarchy}");
             HashCoroutine = StartCoroutine(GrowCoroutine());
             _isCoroutineStarted = true;
         }

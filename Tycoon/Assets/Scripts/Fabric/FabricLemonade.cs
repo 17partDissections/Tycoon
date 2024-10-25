@@ -1,0 +1,7 @@
+
+
+public class FabricLemonade : ProFabricAbstraction
+{
+
+}
+

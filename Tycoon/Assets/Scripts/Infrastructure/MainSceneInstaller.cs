@@ -2,21 +2,30 @@ using Zenject;
 using UnityEngine;
 using System.Collections.Generic;
 using Tycoon.Factories;
-using System;
 using Tycoon.PlayerSystems;
 
-public class MainSceneInstaller : MonoInstaller, IInitializable
+public class MainSceneInstaller : MonoInstaller
 {
     [SerializeField] private Wallet _walletInstance;
     [SerializeField] private List<BuyerStateMachine> _buyers;
     [SerializeField] private PlayerHotkeys _player;
     [SerializeField] private AudioHandler _audioHandler;
     [SerializeField] private InternetCanvas _internetCanvas;
-
-    public void Initialize()
+    [SerializeField] private ItemHandler _itemHandler;
+    [SerializeField] private List<Item> _itemList;
+    public override void Start()
     {
-        var buyersObjectPool = Container.Resolve<ObjectPool<BuyerStateMachine>>();
-        buyersObjectPool.InitPool(Container.TryResolveId<Tycoon.Factories.IFactory>(typeof(BuyersFactory)), 5);
+        var myFactory = new ItemFactory(_itemList);
+        Container.Inject(_itemHandler, new object[]
+        {
+            new ObjectPool <Strawberry>(myFactory, 5, false),
+            new ObjectPool <Banana>(myFactory, 5, false),
+            new ObjectPool <Lemon>(myFactory, 6, false),
+            new ObjectPool <StrawberryJam>(myFactory, 6, false),
+            new ObjectPool <Lemonade>(myFactory, 4, false),
+            new ObjectPool <Watermelon>(myFactory, 6, false),
+
+        });
     }
     public override void InstallBindings()
     {
@@ -33,6 +42,15 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindSaveSystem();
         BindLoadSystem();
         BindInternet();
+        BindItemHandler();
+    }
+        private void BindItemHandler()
+    {
+        Container
+            .Bind<ItemHandler>()
+            .FromInstance(_itemHandler)
+            .AsSingle()
+            .NonLazy();
     }
     private void BindSaveSystem()
     {
@@ -99,6 +117,7 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         Container.Bind<ObjectPool<BuyerStateMachine>>()
             .FromNew()
             .AsSingle()
+            .WithArguments(new BuyersFactory(_buyers, Container), 6, true)
             .NonLazy();
     }
     private void BindBuyersFactory()

@@ -12,19 +12,19 @@ public class RunAwayState : BaseState<BuyerStateMachine.BuyerStates>
 
     public override void Enter2State()
     {
-        _stateMachine.Agent.SetDestination(new Vector3(-2, 0, 35));
+        _stateMachine.Agent.SetDestination(new Vector3(0, 0, 43));
     }
 
     public override void Exit2State()
     {
-        _stateMachine.BackpackBuyer.DestroyAllItems();
+        _stateMachine.BackpackBuyer.DropBack2PoolAllItems();
     }
 
     public override void UpdateState()
     {
         if (_stateMachine.Agent.remainingDistance < 0.5f)
         {
-            _stateMachine.ObjectPool.DropBackToPool(_stateMachine);
+            _stateMachine.gameObject.SetActive(false);
             _stateMachine.EventBus.BuyerGoAwaySignal.Invoke();
         }
     }

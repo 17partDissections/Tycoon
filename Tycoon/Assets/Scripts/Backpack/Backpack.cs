@@ -14,15 +14,15 @@ public abstract class Backpack : MonoBehaviour
         {
         Items.Add(item);
             item.gameObject.SetActive(true);
-            
-            if (item.ItemName != ItemName.StrawberryJam)
-            {
-                item.transform.rotation = Quaternion.identity;
-                item.transform.rotation = Quaternion.Euler(-90, 0, 0);
-            }
+
+            //if (item.ItemName != ItemName.StrawberryJam)
+            //{
+            //    item.transform.rotation = Quaternion.identity;
+            //    item.transform.rotation = Quaternion.Euler(-90, 0, 0);
+            //}
 
             item.transform.parent = _itemStartPosition;
-            item.transform.position = Vector3.zero;
+            //item.transform.position = Vector3.zero;
             SortItem();
         }
         
@@ -56,7 +56,7 @@ public abstract class Backpack : MonoBehaviour
         {
             if (item.ItemName == itemType)
             {
-                Destroy(item.gameObject);
+                item.gameObject.SetActive(false);
                 Items.Remove(item);
                 SortItem();
                 return item;
@@ -65,11 +65,11 @@ public abstract class Backpack : MonoBehaviour
         return null;
 
     }
-    public void DestroyAllItems()
+    public void DropBack2PoolAllItems()
     {
         foreach (var item in Items)
         {
-            Destroy(item.gameObject);
+            item.gameObject.SetActive(false);
 
         }
         Items.Clear();

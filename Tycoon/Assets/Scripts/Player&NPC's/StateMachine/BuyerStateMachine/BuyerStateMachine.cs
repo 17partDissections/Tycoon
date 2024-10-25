@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
@@ -7,13 +8,17 @@ using Zenject;
 
 public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerStates>
 {
-    public ObjectPool<BuyerStateMachine> ObjectPool;
     [SerializeField] private Animator _animator;
     public Vector3 WayPoint;
     public NavMeshAgent Agent;
     public BackpackBuyer BackpackBuyer;
     public EventBus EventBus;
     public QueueHandler QueueHandler;
+
+    [SerializeField] private List<Transform> _hair;
+    private int _hairIndex;
+    [SerializeField] private List<Transform> _cloth;
+    private int _clothIndex;
 
     public Storage Storage { get; private set; }
 
@@ -51,6 +56,7 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         States.Add(BuyerStates.RunAwayState, RunAwayState);
         StartMachine(BuyerStates.StartState);
         CheckAgentVelocityAsync().Forget();
+
     }
     [Inject]
     public void Init(Storage storage, EventBus eventBus, QueueHandler queueHandler)
@@ -59,6 +65,20 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
         EventBus = eventBus;
         QueueHandler = queueHandler;
 
+    }
+    private void OnEnable()
+    {
+        _hairIndex = Random.Range(0, _hair.Count);
+        _hair[_hairIndex].gameObject.SetActive(true);
+        _clothIndex = Random.Range(0, _cloth.Count);
+        _cloth[_clothIndex].gameObject.SetActive(true);
+
+
+    }
+    private void OnDisable() 
+    {
+        _hair[_hairIndex].gameObject.SetActive(false);
+        _cloth[_clothIndex].gameObject.SetActive(false);
     }
     public void ChangeStateFromMachine(BuyerStates state)
     {

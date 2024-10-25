@@ -5,8 +5,12 @@ public enum ItemName
     //FOOD
     Strawberry,
     Banana,
-    Watermelon,
+    Lemon,
     StrawberryJam,
+    Watermelon,
+    Lemonade,
+
+
 
     //OTHER
     Cashier
