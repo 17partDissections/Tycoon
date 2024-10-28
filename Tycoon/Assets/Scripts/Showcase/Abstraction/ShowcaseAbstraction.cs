@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using TMPro;
-using Tycoon.PlayerSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
@@ -24,7 +22,7 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
     private QueueHandler _queueHandler;
     private AudioHandler _audioHandler;
     protected Backpack BackpackAbstraction;
-    [HideInInspector] public bool Buyed = false;
+     public bool Buyed = false;
     private FabricsNShowcasesCanvas _canvas;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TextMeshProUGUI _text;
@@ -37,7 +35,7 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
     private bool _isPlayerInTrigger;
     [SerializeField] private int _stage;
     private ItemHandler _itemHandler;
-    private SaveSystem _saveSystem;
+    protected SaveSystem SaveSystem;
 
     public int PplInQueueAmount { get; set; }
     public Transform FirstPointOfQueue { get => _startOfQueuePosition; set => _startOfQueuePosition = value; }
@@ -62,7 +60,7 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
     private void Construct(SaveSystem saveSys, ItemHandler itemHandler, EventBus bus, Storage storage, Wallet wallet, QueueHandler queueHandler, AudioHandler audioSources)
     {
         _itemHandler = itemHandler;
-        _saveSystem = saveSys;
+        SaveSystem = saveSys;
         _eventbus = bus;
         _storage = storage;
         _playerWallet = wallet;
@@ -142,7 +140,9 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
             _canvas.OnlyIcon();
             _storage.AddItem2Aviable(Item.ItemName, _lastPositionInQueue);
             _eventbus.StageSignal.Invoke(_stage);
-            _saveSystem.SaveShowcase(this);
+            SaveSystem.SaveShowcase(this);
+            if (_isPlayerInTrigger)
+                BackpackWasWorker();
         }
     }
     public void BuyShowcaseTroughLoader()
@@ -183,6 +183,8 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
                     item = UseObj(_itemHandler.BananaPool); break;
                 case ItemName.Lemon:
                     item = UseObj(_itemHandler.LemonPool); break;
+                case ItemName.Lemonade:
+                    item = UseObj(_itemHandler.LemonadePool); break;
                 case ItemName.StrawberryJam:
                     item = UseObj(_itemHandler.StrawberryJamPool); break;
                 case ItemName.Watermelon:
@@ -191,7 +193,7 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
             backpackBuyer.SaveItem(item);
             EnabledItems4Buyers--;
             backpackBuyer.RepeatingItems.RemoveAt(0);
-            _saveSystem.SaveShowcase(this);
+            SaveSystem.SaveShowcase(this);
             var ActiveItems = ShowcaseInventory.FindAll(x => x.isActiveAndEnabled);
             ActiveItems[0].gameObject.SetActive(false);
             backpackBuyer.WannaBuy.Remove(Item.ItemName);
@@ -217,7 +219,6 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
         BuyerEnteredTrigger.Remove(backpackBuyer);
         if (backpackBuyer.WannaBuy.Count == 0)
         {
-            Debug.Log(backpackBuyer.WannaBuy.Count);
             buyerStateMachine.ChangeStateFromMachine(BuyerStateMachine.BuyerStates.Going2CashierState);
             //buyerStateMachine.Storage.ChangePositionInQueue(buyerStateMachine.WannaBuy[0], false);
             _queueHandler.MoveBuyersInQueue(Item.ItemName);
@@ -257,7 +258,7 @@ public abstract class ShowcaseAbstraction : MonoBehaviour, IBuyable, IShowcase
             else
                 GiveItems2Buyer(BuyerEnteredTrigger[0]);
         }
-        _saveSystem.SaveShowcase(this);
+        SaveSystem.SaveShowcase(this);
     }
     public void LoadItems()
     {

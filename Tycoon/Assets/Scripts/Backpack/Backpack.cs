@@ -12,17 +12,9 @@ public abstract class Backpack : MonoBehaviour
     {
         if (Items.Count < _maxBackpackCapacity)
         {
-        Items.Add(item);
+            Items.Add(item);
             item.gameObject.SetActive(true);
-
-            //if (item.ItemName != ItemName.StrawberryJam)
-            //{
-            //    item.transform.rotation = Quaternion.identity;
-            //    item.transform.rotation = Quaternion.Euler(-90, 0, 0);
-            //}
-
             item.transform.parent = _itemStartPosition;
-            //item.transform.position = Vector3.zero;
             SortItem();
         }
         

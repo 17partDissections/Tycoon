@@ -71,11 +71,9 @@ public class Cashier : MonoBehaviour, IShowcase
             if (other.TryGetComponent<Backpack>(out Backpack backpack))
                 if (backpack is BackpackBuyer && backpack.IsBackpackFull())
                 {
-                    Debug.Log("backpackBuyer");
                     other.TryGetComponent<BuyerStateMachine>(out BuyerStateMachine buyerStateMachine);
                     if (_isWorkerOnDaDesk || _isPlayerOnDaDesk)
                     {
-                        Debug.Log("idk");
                         StartCoroutine(BuyerCoroutine(backpack));
                     }
                     if (_isPlayerOnDaDesk)
@@ -123,15 +121,12 @@ public class Cashier : MonoBehaviour, IShowcase
             //case int i when i < 0 && > 5
             case > 0 and <= 15:
                 _moneyStages[0].SetActive(true);
-                Debug.Log("Stage= " + 0);
                 break;
             case > 15 and <= 30:
                 _moneyStages[1].SetActive(true);
-                Debug.Log("Stage= " + 1);
                 break;
             case > 30 and <= 200:
                 _moneyStages[2].SetActive(true);
-                Debug.Log("Stage= " + 2);
                 break;
         }
         backpack.DropBack2PoolAllItems();
@@ -174,7 +169,6 @@ public class Cashier : MonoBehaviour, IShowcase
             item.gameObject.SetActive(false);
             item.transform.position = oldMoneyObjPosition;
         }
-        //_moneyObj[0].transform.parent.gameObject.SetActive(false);
         _wallet.CoinsAmount += _finalCost;
         foreach (var item in _moneyStages)
             item.gameObject.SetActive(false);

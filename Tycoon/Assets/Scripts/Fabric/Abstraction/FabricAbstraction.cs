@@ -133,9 +133,11 @@ public abstract class FabricAbstraction : MonoBehaviour, IBuyable
 
         }
         if(YandexGame.lang=="en")
-            Canvas.Text.text = "done";
+            Canvas.Text.text = "Done";
         else if(YandexGame.lang=="ru")
-            Canvas.Text.text = "готово";
+            Canvas.Text.text = "Готово";
+        else if (YandexGame.lang == "tr")
+            Canvas.Text.text = "Tamamlamak";
         switch (this.Item.ItemName)
         {
             case ItemName.Strawberry:

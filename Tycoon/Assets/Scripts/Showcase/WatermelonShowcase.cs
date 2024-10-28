@@ -26,11 +26,8 @@ public class WatermelonShowcase : ShowcaseAbstraction
                 return;
             }
             else
-            {
                 GiveItems2Buyer(BuyerEnteredTrigger[0]);
-                //GiveItems2Buyer(BuyerEnteredTrigger[0]);
-            }
-
+            SaveSystem.SaveShowcase(this);
         }
     }
 }

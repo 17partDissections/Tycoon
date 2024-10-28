@@ -1,5 +1,5 @@
 {
-    "idSave": 203,
+    "idSave": 540,
     "isFirstSession": false,
     "language": "ru",
     "promptDone": false,
@@ -10,10 +10,25 @@
         true,
         false
     ],
-    "Money": 12121935,
+    "Money": 12114377,
     "showcaseSave": [
         {
             "ShowcaseName": "StrawberryShowcase",
+            "Buyed": true,
+            "ReservedSlots": 0
+        },
+        {
+            "ShowcaseName": "BananaShowcase",
+            "Buyed": true,
+            "ReservedSlots": 0
+        },
+        {
+            "ShowcaseName": "LemonShowcase",
+            "Buyed": true,
+            "ReservedSlots": 0
+        },
+        {
+            "ShowcaseName": "StrawberryJamShowcase",
             "Buyed": true,
             "ReservedSlots": 0
         }
@@ -36,7 +51,11 @@
             "Buyed": true
         },
         {
-            "FabricName": "JamFabric1Factory",
+            "FabricName": "BananaFabric2",
+            "Buyed": true
+        },
+        {
+            "FabricName": "BananaFabric3",
             "Buyed": true
         },
         {
@@ -44,7 +63,11 @@
             "Buyed": true
         },
         {
-            "FabricName": "LemonadeFabric1Factory",
+            "FabricName": "JamFabric1Factory",
+            "Buyed": true
+        },
+        {
+            "FabricName": "WatermelonFabric1",
             "Buyed": true
         }
     ]

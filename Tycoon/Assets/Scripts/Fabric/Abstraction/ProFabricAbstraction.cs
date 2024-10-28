@@ -18,6 +18,8 @@ public abstract class ProFabricAbstraction : FabricAbstraction
     private List<Item> _foundAllBaked;
     [SerializeField] private int _materialAnimationObjTime;
     [SerializeField] private int _bakedAnimationObjTime;
+    [SerializeField] private Vector3 _materialAnimationObjDirection;
+    [SerializeField] private Vector3 _bakedAnimationObjDirection;
 
 
     protected override void OnTriggerEnter(Collider other)
@@ -132,12 +134,8 @@ public abstract class ProFabricAbstraction : FabricAbstraction
 
         Timer = 0;
         _foundAllBaked = _baked.FindAll(item => !item.isActiveAndEnabled);
-        Debug.Log("material count: " + MaterialsCount);
-        Debug.Log("foundallbaked: " + _foundAllBaked.Count);
         yield return new WaitWhile(() => MaterialsCount == 0);
-        Debug.Log("12312331");
         yield return new WaitWhile(() => _foundAllBaked.Count == 0);
-        Debug.Log("Start Of Coroutine");
         yield return new WaitForSeconds(0.5f);
         List<Item> materialsInInventory = _materials.FindAll(item => item.isActiveAndEnabled);
         //int randomNumber = Random.Range(0, materialsInInventory.Count);
@@ -155,10 +153,10 @@ public abstract class ProFabricAbstraction : FabricAbstraction
             bakedAnimationObject.transform.GetChild(0).gameObject.SetActive(true);
         Tween tween = null;
         var savedBakedAObjTransform = bakedAnimationObject.transform.position;
-        materialAnimationObject.DOMove(materialAnimationObject.transform.position + Vector3.forward, _materialAnimationObjTime).SetEase(Ease.Linear)
+        materialAnimationObject.DOMove(materialAnimationObject.transform.position + _materialAnimationObjDirection, _materialAnimationObjTime).SetEase(Ease.Linear)
             .OnComplete(() =>
             {
-                tween = bakedAnimationObject.DOMove(bakedAnimationObject.transform.position + Vector3.right * 2.5f, _bakedAnimationObjTime).SetEase(Ease.Linear);
+                tween = bakedAnimationObject.DOMove(bakedAnimationObject.transform.position + _bakedAnimationObjDirection * 2.5f, _bakedAnimationObjTime).SetEase(Ease.Linear);
             }
         );
         while (Timer < GrowSpeed)
@@ -178,9 +176,11 @@ public abstract class ProFabricAbstraction : FabricAbstraction
         var found = _baked.FirstOrDefault(item => !item.isActiveAndEnabled);
         GetBackAnimationObjects2DefaultPositions(materialAnimationObject, bakedAnimationObject, savedMaterialAObjTransform, savedBakedAObjTransform);
         if (YandexGame.lang == "en")
-            Canvas.Text.text = "done";
+            Canvas.Text.text = "Done";
         else if (YandexGame.lang == "ru")
-            Canvas.Text.text = "готово";
+            Canvas.Text.text = "Готово";
+        else if (YandexGame.lang == "tr")
+            Canvas.Text.text = "Tamamlamak";
         if (found != null)
         {
             found.gameObject.SetActive(true);
@@ -206,7 +206,6 @@ public abstract class ProFabricAbstraction : FabricAbstraction
             HashCoroutine = StartCoroutine(GrowCoroutine());
         else
         {
-            Debug.Log("END OF COROUTINE");
             HashCoroutine = null;
         }
 

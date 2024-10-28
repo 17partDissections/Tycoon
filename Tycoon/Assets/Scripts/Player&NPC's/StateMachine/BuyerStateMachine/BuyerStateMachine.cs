@@ -17,8 +17,12 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
 
     [SerializeField] private List<Transform> _hair;
     private int _hairIndex;
-    [SerializeField] private List<Transform> _cloth;
-    private int _clothIndex;
+    [SerializeField] private List<Transform> _outerwear;
+    private int _outerwearIndex;
+    [SerializeField] private List<Transform> _pants;
+    private int _pantsIndex;
+    [SerializeField] private List<Transform> _accessories;
+    private int _accessoriesIndex;
 
     public Storage Storage { get; private set; }
 
@@ -70,15 +74,20 @@ public class BuyerStateMachine : StateMachineController<BuyerStateMachine.BuyerS
     {
         _hairIndex = Random.Range(0, _hair.Count);
         _hair[_hairIndex].gameObject.SetActive(true);
-        _clothIndex = Random.Range(0, _cloth.Count);
-        _cloth[_clothIndex].gameObject.SetActive(true);
-
+        _outerwearIndex = Random.Range(0, _outerwear.Count);
+        _outerwear[_outerwearIndex].gameObject.SetActive(true);
+        _pantsIndex = Random.Range(0, _pants.Count);
+        _pants[_pantsIndex].gameObject.SetActive(true);
+        _accessoriesIndex = Random.Range(0, _accessories.Count);
+        _accessories[_accessoriesIndex].gameObject.SetActive(true);
 
     }
     private void OnDisable() 
     {
         _hair[_hairIndex].gameObject.SetActive(false);
-        _cloth[_clothIndex].gameObject.SetActive(false);
+        _outerwear[_outerwearIndex].gameObject.SetActive(false);
+        _pants[_pantsIndex].gameObject.SetActive(false);
+        _accessories[_accessoriesIndex]?.gameObject.SetActive(false);
     }
     public void ChangeStateFromMachine(BuyerStates state)
     {
